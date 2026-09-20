@@ -1,0 +1,106 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
+import logging
+import traceback
+
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+from apps.api.core.llm_client import LLMResponseError, LLMUnavailableError
+
+logger = logging.getLogger("ja_assure.api")
+
+from apps.api.routers import (
+    brands,
+    campaigns,
+    content,
+    demo,
+    events,
+    health,
+    leads,
+    metrics,
+    observability,
+    opportunities,
+    optimization,
+    research,
+    review,
+    visual,
+)
+
+app = FastAPI(title="JAPAI - AI Marketing OS", version="1.0.0")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.include_router(health.router, tags=["health"])
+app.include_router(content.router)
+app.include_router(review.router)
+app.include_router(metrics.router)
+app.include_router(brands.router)
+app.include_router(research.router)
+app.include_router(opportunities.router)
+app.include_router(campaigns.router)
+app.include_router(leads.router)
+app.include_router(optimization.router)
+app.include_router(observability.router)
+app.include_router(events.router)
+app.include_router(visual.router)
+app.include_router(demo.router)
+
+
+@app.exception_handler(LLMUnavailableError)
+def handle_llm_unavailable(request: Request, exc: LLMUnavailableError):
+    logger.warning("LLM unavailable on %s: %s", request.url.path, exc)
+    return JSONResponse(
+        status_code=503,
+        content={
+            "error": "llm_unavailable",
+            "detail": str(exc),
+            "hint": "The Gemini API call failed (quota, network, or credentials). "
+            "Check GEMINI_API_KEY and daily quota, then retry.",
+        },
+    )
+
+
+@app.exception_handler(LLMResponseError)
+def handle_llm_response(request: Request, exc: LLMResponseError):
+    logger.warning("Malformed LLM response on %s: %s", request.url.path, exc)
+    return JSONResponse(
+        status_code=502,
+        content={
+            "error": "llm_bad_response",
+            "detail": str(exc),
+            "hint": "The model returned output that did not match the required schema. Retry.",
+        },
+    )
+
+
+@app.exception_handler(ValueError)
+def handle_value_error(request: Request, exc: ValueError):
+    """Agents raise ValueError for not-found/invalid input; never let that 500."""
+    logger.info("Bad request on %s: %s", request.url.path, exc)
+    return JSONResponse(status_code=400, content={"error": "bad_request", "detail": str(exc)})
+
+
+@app.exception_handler(Exception)
+def handle_unexpected(request: Request, exc: Exception):
+    """Last line of defence: a live demo must never render a raw traceback."""
+    logger.error("Unhandled error on %s\n%s", request.url.path, traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "internal_error",
+            "detail": f"{type(exc).__name__}: {str(exc)[:200]}",
+            "hint": "Full traceback is in the api container logs.",
+        },
+    )
+
+
+@app.get("/")
+def root():
+    return {"service": "ja-assure-ai-marketing-os", "status": "running", "phase": 10}

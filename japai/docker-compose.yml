@@ -1,0 +1,79 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: ja_assure_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ja_assure
+      POSTGRES_PASSWORD: ja_assure_pw
+      POSTGRES_DB: ja_assure
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ja_assure -d ja_assure"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: ja_assure_api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg2://ja_assure:ja_assure_pw@postgres:5432/ja_assure
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./db:/app/db
+      - ./tests:/app/tests
+      - ./alembic.ini:/app/alembic.ini
+    command: uvicorn apps.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: ja_assure_web
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    container_name: ja_assure_worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg2://ja_assure:ja_assure_pw@postgres:5432/ja_assure
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./worker:/app/worker
+      - ./apps:/app/apps
+      - ./db:/app/db
+    command: python -m worker.main --poll
+
+volumes:
+  pgdata:

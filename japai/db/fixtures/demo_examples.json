@@ -1,0 +1,453 @@
+{
+  "generated_at": "2026-09-13T19:48:55.691853+00:00",
+  "note": "Every example here is a REAL captured run from the live pipeline, saved verbatim by db/fixtures/record_demo_examples.py. None of it is fabricated or hand-edited.",
+  "count": 5,
+  "examples": [
+    {
+      "id": "clean_pass_en",
+      "title": "Clean claim, English",
+      "description": "A well-grounded claim that survives the full pipeline.",
+      "kind": "demo_run",
+      "language": "en",
+      "brand_name": "Jade",
+      "claim_or_topic": "our policy covers jewellery stock while it is in transit",
+      "recorded_at": "2026-09-13T19:48:46.732546+00:00",
+      "recorded_by": "record_demo_examples.py",
+      "is_real_capture": true,
+      "mode": "live",
+      "live_available": true,
+      "recorded": false,
+      "brand": {
+        "id": "ea083cec-c84d-41c1-b2c3-0efa21c3e874",
+        "name": "Jade",
+        "slug": "jade"
+      },
+      "language_name": "English",
+      "english_source": null,
+      "compliance_ran_on": "the generated English copy",
+      "steps": [
+        {
+          "key": "input_guard",
+          "label": "Input accepted",
+          "status": "pass",
+          "detail": "Passed length, topic and injection checks."
+        },
+        {
+          "key": "generation",
+          "label": "Content generated",
+          "status": "pass",
+          "detail": "Generated with the content agent, grounded in approved brand knowledge."
+        },
+        {
+          "key": "blocklist",
+          "label": "Step 1 · Forbidden-phrase scan",
+          "status": "pass",
+          "detail": "No blocklisted phrases found (16 en terms checked).",
+          "language": "en"
+        },
+        {
+          "key": "claims",
+          "label": "Step 2-3 · Claim extraction & verification",
+          "status": "pass",
+          "detail": "All extracted claims matched approved brand knowledge.",
+          "issues": []
+        },
+        {
+          "key": "review",
+          "label": "Step 4 · Compliance review",
+          "status": "pass",
+          "detail": "Verdict: pass. 0 issue(s) cited a specific policy rule.",
+          "issues": [],
+          "policy_refs": []
+        }
+      ],
+      "result": {
+        "content_version_id": "0cc9c0a5-1125-4c4c-a6c5-17c5d70cf41c",
+        "body": "Transit logistics demand the same precision as your workshop bench. \n\nWhen high-value inventory moves between scheduled premises or to approved third-party locations such as trade shows, the exposure changes. Standard commercial policies rarely account for the specific custody and security chain required for fine jewellery.\n\nJade underwrites jewellers block risks specifically for the Singapore trade. Our policy covers stock at scheduled premises and in transit, extending cover to goods in transit between scheduled premises and approved third-party locations such as trade shows, subject to the security arrangements and transit limits set out in the policy schedule.\n\nWhen an insured loss occurs, Jade settles claims based on the valuation basis set out in the policy schedule, following proper underwriting assessment.\n\nReview your transit limits with a specialist who understands the trade.",
+        "status": "submitted_for_review",
+        "outcome": "pass",
+        "risk_level": "pass",
+        "detected_issues": [],
+        "policy_refs": [],
+        "suggested_revision": null,
+        "reviewer_type": "llm"
+      }
+    },
+    {
+      "id": "blocked_absolutes_en",
+      "title": "Absolute guarantees, English",
+      "description": "Multiple absolute guarantees — caught with a real policy citation.",
+      "kind": "demo_run",
+      "language": "en",
+      "brand_name": "Jade",
+      "claim_or_topic": "we guarantee every claim is approved and your stock is 100% covered with zero risk",
+      "recorded_at": "2026-09-13T19:48:50.664591+00:00",
+      "recorded_by": "record_demo_examples.py",
+      "is_real_capture": true,
+      "mode": "live",
+      "live_available": true,
+      "recorded": false,
+      "brand": {
+        "id": "ea083cec-c84d-41c1-b2c3-0efa21c3e874",
+        "name": "Jade",
+        "slug": "jade"
+      },
+      "language_name": "English",
+      "english_source": null,
+      "compliance_ran_on": "the generated English copy",
+      "steps": [
+        {
+          "key": "input_guard",
+          "label": "Input accepted",
+          "status": "pass",
+          "detail": "Passed length, topic and injection checks."
+        },
+        {
+          "key": "input_scan",
+          "label": "Your wording vs. the forbidden-phrase list",
+          "status": "warn",
+          "detail": "Your input itself contains phrasing that is blocked outright in insurance marketing. The content agent is compliance-aware and will not reproduce it — but if it had, Step 1 below would have blocked it.",
+          "terms": [
+            "100% covered",
+            "zero risk"
+          ]
+        },
+        {
+          "key": "generation",
+          "label": "Content generated",
+          "status": "pass",
+          "detail": "Generated with the content agent, grounded in approved brand knowledge."
+        },
+        {
+          "key": "blocklist",
+          "label": "Step 1 · Forbidden-phrase scan",
+          "status": "pass",
+          "detail": "No blocklisted phrases found (16 en terms checked).",
+          "language": "en"
+        },
+        {
+          "key": "claims",
+          "label": "Step 2-3 · Claim extraction & verification",
+          "status": "warn",
+          "detail": "1 claim(s) could not be matched to approved brand knowledge.",
+          "issues": [
+            {
+              "term": "Claims settlement is subject to adherence to agreed safe and security warranties",
+              "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+              "policy_ref": null
+            }
+          ]
+        },
+        {
+          "key": "review",
+          "label": "Step 4 · Compliance review",
+          "status": "warn",
+          "detail": "Verdict: review. 1 issue(s) cited a specific policy rule.",
+          "issues": [
+            {
+              "term": "Claims are assessed and settled based on the valuation basis set out in the policy schedule, alongside adherence to agreed safe and security warranties",
+              "reason": "Unsupported claim regarding claims settlement being subject to adherence to agreed safe and security warranties, as flagged by automated check.",
+              "policy_ref": "CLAIM-SUBST-01"
+            }
+          ],
+          "policy_refs": [
+            "CLAIM-SUBST-01"
+          ]
+        }
+      ],
+      "result": {
+        "content_version_id": "59e76470-a023-48ab-b1b9-53a17ee1b290",
+        "body": "Exhibiting at an upcoming trade show or moving high-value inventory between scheduled premises requires precise transit protocols. \n\nWhen underwriting jewellers block risks specifically for the Singapore trade, we look closely at the mechanics of how your stock moves. Jade policies cover stock at scheduled premises and in transit, and extend cover to goods in transit between scheduled premises and approved third-party locations such as trade shows, subject to the security arrangements and transit limits set out in your policy schedule.\n\nIn the event of a loss, claims are assessed and settled based on the valuation basis set out in the policy schedule, alongside adherence to agreed safe and security warranties. \n\nPrecision in your schedule ensures precision in your cover. Review your transit limits with our specialist team today.",
+        "status": "submitted_for_review",
+        "outcome": "needs_human_review",
+        "risk_level": "review",
+        "detected_issues": [
+          {
+            "term": "Claims settlement is subject to adherence to agreed safe and security warranties",
+            "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+            "policy_ref": null
+          },
+          {
+            "term": "Claims are assessed and settled based on the valuation basis set out in the policy schedule, alongside adherence to agreed safe and security warranties",
+            "reason": "Unsupported claim regarding claims settlement being subject to adherence to agreed safe and security warranties, as flagged by automated check.",
+            "policy_ref": "CLAIM-SUBST-01"
+          }
+        ],
+        "policy_refs": [
+          "CLAIM-SUBST-01"
+        ],
+        "suggested_revision": "Exhibiting at an upcoming trade show or moving high-value inventory between scheduled premises requires precise transit protocols. When underwriting jewellers block risks specifically for the Singapore trade, we look closely at the mechanics of how your stock moves. Jade policies cover stock at scheduled premises and in transit, and extend cover to goods in transit between scheduled premises and approved third-party locations such as trade shows, subject to the security arrangements and transit limits set out in your policy schedule. In the event of a loss, claims are assessed and settled based on the terms set out in the policy schedule. Precision in your schedule ensures precision in your cover. Review your transit limits with our specialist team today.",
+        "reviewer_type": "llm"
+      }
+    },
+    {
+      "id": "blocked_check_only_en",
+      "title": "Forbidden phrases, checked as written",
+      "description": "Check-only mode: compliance judges the text exactly as supplied. The deterministic blocklist blocks it outright and steps 2-4 are skipped, so this verdict costs ZERO model calls.",
+      "kind": "demo_run",
+      "language": "en",
+      "brand_name": "Jade",
+      "claim_or_topic": "Our jewellers block policy is guaranteed to pay every claim, no exceptions. Your stock is 100% covered and completely risk-free.",
+      "recorded_at": "2026-09-13T19:48:50.678667+00:00",
+      "recorded_by": "record_demo_examples.py",
+      "is_real_capture": true,
+      "mode": "live",
+      "demo_mode": "check_only",
+      "live_available": true,
+      "recorded": false,
+      "brand": {
+        "id": "ea083cec-c84d-41c1-b2c3-0efa21c3e874",
+        "name": "Jade",
+        "slug": "jade"
+      },
+      "language_name": "English",
+      "english_source": null,
+      "compliance_ran_on": "your text exactly as written",
+      "steps": [
+        {
+          "key": "input_guard",
+          "label": "Input accepted",
+          "status": "pass",
+          "detail": "Passed length, topic and injection checks."
+        },
+        {
+          "key": "generation",
+          "label": "Generation skipped",
+          "status": "skipped",
+          "detail": "Check-only mode: your text is judged exactly as written, with no generation step in between."
+        },
+        {
+          "key": "blocklist",
+          "label": "Step 1 · Forbidden-phrase scan",
+          "status": "fail",
+          "detail": "4 blocklisted phrase(s) found — blocked immediately.",
+          "terms": [
+            "guaranteed",
+            "100% covered",
+            "risk-free",
+            "no exceptions"
+          ],
+          "language": "en"
+        },
+        {
+          "key": "short_circuit",
+          "label": "Steps 2-4 skipped",
+          "status": "skipped",
+          "detail": "A blocklist hit blocks outright, so no LLM calls were spent on content that was already doomed."
+        }
+      ],
+      "result": {
+        "content_version_id": "8eefc812-40c6-458f-a814-ddc300515671",
+        "body": "Our jewellers block policy is guaranteed to pay every claim, no exceptions. Your stock is 100% covered and completely risk-free.",
+        "status": "rejected",
+        "outcome": "fail",
+        "risk_level": "block",
+        "detected_issues": [
+          {
+            "term": "guaranteed",
+            "reason": "Contains blocklisted phrase 'guaranteed'",
+            "policy_ref": null
+          },
+          {
+            "term": "100% covered",
+            "reason": "Contains blocklisted phrase '100% covered'",
+            "policy_ref": null
+          },
+          {
+            "term": "risk-free",
+            "reason": "Contains blocklisted phrase 'risk-free'",
+            "policy_ref": null
+          },
+          {
+            "term": "no exceptions",
+            "reason": "Contains blocklisted phrase 'no exceptions'",
+            "policy_ref": null
+          }
+        ],
+        "policy_refs": [],
+        "suggested_revision": null,
+        "reviewer_type": "deterministic"
+      }
+    },
+    {
+      "id": "localized_zh",
+      "title": "Cultural adaptation, Chinese (Simplified)",
+      "description": "Generated in English, adapted for Chinese-speaking Singapore owners, then compliance-checked in Chinese.",
+      "kind": "demo_run",
+      "language": "zh-Hans",
+      "brand_name": "Jade",
+      "claim_or_topic": "protecting jewellery inventory held in store overnight",
+      "recorded_at": "2026-09-13T19:48:55.685918+00:00",
+      "recorded_by": "record_demo_examples.py",
+      "is_real_capture": true,
+      "mode": "live",
+      "live_available": true,
+      "recorded": false,
+      "brand": {
+        "id": "ea083cec-c84d-41c1-b2c3-0efa21c3e874",
+        "name": "Jade",
+        "slug": "jade"
+      },
+      "language_name": "Chinese (Simplified)",
+      "english_source": "The security warranty in your schedule defines the boundary of your cover.\n\nFor independent jewellers in Singapore, leaving high-value inventory on display after hours is not simply a matter of store protocol; it is a structural underwriting condition. \n\nStandard jewellers block policies require strict adherence to safe and alarm warranties. If stock remains outside a certified, locked safe overnight without meeting the specific security criteria outlined in your policy schedule, the resulting exposure sits outside the terms of cover. \n\nPrecision in risk management starts with aligning your daily closing procedures directly with your policy parameters. When the safe is locked and the premises secured according to schedule, your stock at scheduled premises remains properly protected.\n\nUnderstand the mechanics of your warranty. Review your schedule to ensure your overnight storage practices match your underwriting terms.",
+      "compliance_ran_on": "the localized copy, in its own language",
+      "steps": [
+        {
+          "key": "input_guard",
+          "label": "Input accepted",
+          "status": "pass",
+          "detail": "Passed length, topic and injection checks."
+        },
+        {
+          "key": "generation",
+          "label": "Content generated",
+          "status": "pass",
+          "detail": "Generated in English, then culturally adapted (not translated) into Chinese (Simplified)."
+        },
+        {
+          "key": "blocklist",
+          "label": "Step 1 · Forbidden-phrase scan",
+          "status": "pass",
+          "detail": "No blocklisted phrases found (11 zh-Hans terms checked).",
+          "language": "zh-Hans"
+        },
+        {
+          "key": "claims",
+          "label": "Step 2-3 · Claim extraction & verification",
+          "status": "warn",
+          "detail": "6 claim(s) could not be matched to approved brand knowledge.",
+          "issues": [
+            {
+              "term": "Insurance policy safety terms define the boundaries of coverage.",
+              "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+              "policy_ref": null
+            },
+            {
+              "term": "For local independent jewelers, leaving high-value goods in display cases after closing is both a daily routine and a strict underwriting requirement.",
+              "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+              "policy_ref": null
+            },
+            {
+              "term": "Standard Jewellers Block insurance requires strict compliance with safe and alarm commitments.",
+              "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+              "policy_ref": null
+            },
+            {
+              "term": "If security standards listed in the policy schedule are not followed and inventory is left outside certified and locked safes at night, resulting risks are not covered.",
+              "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+              "policy_ref": null
+            },
+            {
+              "term": "Inventory at the designated policy location is properly protected only when the safe is locked and the store is properly secured according to regulations.",
+              "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+              "policy_ref": null
+            },
+            {
+              "term": "Nighttime storage practices must comply with underwriting requirements by checking the policy schedule.",
+              "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+              "policy_ref": null
+            }
+          ]
+        },
+        {
+          "key": "review",
+          "label": "Step 4 · Compliance review",
+          "status": "pass",
+          "detail": "Verdict: pass. 0 issue(s) cited a specific policy rule.",
+          "issues": [],
+          "policy_refs": []
+        }
+      ],
+      "result": {
+        "content_version_id": "0fffc5b9-3fb3-4f3c-8735-d5e1c533a4b1",
+        "body": "保险凭证上的安全条款，界定了您保障范围的边界。\n\n对于本地的独立珠宝商而言，打烊后将高价值货品留在展柜中，不仅是店铺的日常常规，更是核保的硬性条件。\n\n标准的珠宝商综合险（Jewellers Block）要求严格遵守保险柜及警报器的相关承诺。如果未按保单附表列明的安全标准执行，将存货在夜间置于认证且上锁的保险柜之外，由此产生的风险将不在保障范围之内。\n\n风险管理的精准性，始于将每日的打烊流程与保单条款紧密契合。当保险柜上锁、店面按规定妥善安防，您在保单指定地点的存货方能获得妥当的保障。\n\n明晰保单条款的运作机制。请仔细核对您的保单附表，确保夜间存放的实际操作符合核保要求。",
+        "status": "submitted_for_review",
+        "outcome": "pass",
+        "risk_level": "pass",
+        "detected_issues": [
+          {
+            "term": "Insurance policy safety terms define the boundaries of coverage.",
+            "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+            "policy_ref": null
+          },
+          {
+            "term": "For local independent jewelers, leaving high-value goods in display cases after closing is both a daily routine and a strict underwriting requirement.",
+            "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+            "policy_ref": null
+          },
+          {
+            "term": "Standard Jewellers Block insurance requires strict compliance with safe and alarm commitments.",
+            "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+            "policy_ref": null
+          },
+          {
+            "term": "If security standards listed in the policy schedule are not followed and inventory is left outside certified and locked safes at night, resulting risks are not covered.",
+            "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+            "policy_ref": null
+          },
+          {
+            "term": "Inventory at the designated policy location is properly protected only when the safe is locked and the store is properly secured according to regulations.",
+            "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+            "policy_ref": null
+          },
+          {
+            "term": "Nighttime storage practices must comply with underwriting requirements by checking the policy schedule.",
+            "reason": "Unsupported claim: no matching approved_claim knowledge chunk found for this brand.",
+            "policy_ref": null
+          }
+        ],
+        "policy_refs": [],
+        "suggested_revision": null,
+        "reviewer_type": "llm"
+      }
+    },
+    {
+      "id": "opportunity_walkthrough",
+      "title": "Opportunity scoring walkthrough",
+      "description": "How a content opportunity is scored. Fully deterministic and LLM-free — every number below is the actual input to the score.",
+      "kind": "opportunity",
+      "language": "en",
+      "brand_name": "Jaguar Transit",
+      "recorded_at": "2026-09-13T19:48:55.691826+00:00",
+      "recorded_by": "record_demo_examples.py",
+      "is_real_capture": true,
+      "opportunity": {
+        "title": "Mitigating High-Value Cargo Risk in Modern Freight Transit",
+        "rationale": "Five competitor sources recently highlighted transit risks, signaling strong current interest in cargo protection. With a perfect coverage match and timely industry momentum, this topic is primed for high-value logistics engagement.",
+        "opportunity_type": "Transit and shipping risk",
+        "score": 100.0,
+        "score_breakdown": {
+          "score": 100.0,
+          "formula": "competitor_mentions*10 + recency_weight*20 + coverage_match*30, capped at 100",
+          "capped_at": 100,
+          "raw_total": 100.0,
+          "coverage_match": 1.0,
+          "recency_points": 20.0,
+          "recency_weight": 1.0,
+          "coverage_points": 30.0,
+          "matched_keywords": [
+            "cargo",
+            "freight",
+            "marine",
+            "transit",
+            "transport"
+          ],
+          "competitor_mentions": 5,
+          "competitor_mentions_points": 50
+        },
+        "suggested_angle": "Position Jaguar Transit as the definitive shield against unforeseen marine and freight transport liabilities.",
+        "suggested_formats": [
+          "linkedin_post",
+          "x_thread"
+        ],
+        "source_chunk_ids": [
+          "6b109263-d044-41fa-aa67-baa56e6b8402",
+          "cd39597f-ca0c-4b37-83ca-3dafbcaf7a81",
+          "e3ecfa9f-462c-4c1b-8ce7-2c4e10b1cc69",
+          "4fa01ae8-fcbd-4602-a9ff-46b75b9fe9f8",
+          "d68551cb-3cdd-4d60-9ff6-5e87163a5f7a"
+        ]
+      }
+    }
+  ]
+}
