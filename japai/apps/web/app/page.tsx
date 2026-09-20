@@ -53,6 +53,14 @@ export default function Home() {
       color: "#06b6d4",
     },
     {
+      title: "📚 Insurtech 101 Repurposer",
+      description: "Repurpose complex insurance masterclasses/whitepapers into multi-channel LinkedIn, Carousel, X & Email nurture kits.",
+      href: "/repurpose",
+      badge: "STANDOUT",
+      color: "#10b981",
+      highlight: true,
+    },
+    {
       title: "📡 System Observability",
       description: "Full audit log of every LLM run, token usage, latency metrics, and daily quota guardrails.",
       href: "/observability",

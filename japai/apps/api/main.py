@@ -26,6 +26,7 @@ from apps.api.routers import (
     opportunities,
     optimization,
     research,
+    repurpose,
     review,
     visual,
 )
@@ -50,6 +51,7 @@ app.include_router(optimization.router)
 app.include_router(observability.router)
 app.include_router(events.router)
 app.include_router(visual.router)
+app.include_router(repurpose.router)
 app.include_router(demo.router)
 
 

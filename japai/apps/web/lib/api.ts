@@ -530,3 +530,103 @@ export async function fetchLiveSingaporeBusinesses(
   return res.json();
 }
 
+// --- Insurtech 101 Knowledge Repurposing Agent ---
+export type MasterclassTemplate = {
+  id: string;
+  brand_slug: string;
+  title: string;
+  category: string;
+  source_type: string;
+  content: string;
+};
+
+export type CarouselSlide = {
+  slide_number: number;
+  role: string;
+  headline: string;
+  body: string;
+  visual_direction: string;
+};
+
+export type RepurposedNurtureKit = {
+  executive_summary: string;
+  target_audience: string;
+  key_takeaways: string[];
+  linkedin_brief: {
+    headline: string;
+    body: string;
+    hashtags: string[];
+  };
+  carousel_deck: {
+    title: string;
+    slides: CarouselSlide[];
+  };
+  x_thread: {
+    post_number: number;
+    tweet: string;
+  }[];
+  outreach_email: {
+    subject: string;
+    body: string;
+  };
+  compliance_check: {
+    passed: boolean;
+    outcome: string;
+    issues_found: any[];
+  };
+  brand: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+};
+
+export async function fetchMasterclassTemplates(): Promise<MasterclassTemplate[]> {
+  const res = await fetch(`${API_BASE_URL}/repurpose/templates`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to fetch templates (${res.status})`);
+  const data = await res.json();
+  return data.templates || [];
+}
+
+export async function generateRepurposedContent(
+  sourceText: string,
+  brandSlug: string = "jade",
+  title?: string
+): Promise<RepurposedNurtureKit> {
+  const res = await fetch(`${API_BASE_URL}/repurpose/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ source_text: sourceText, brand_slug: brandSlug, title }),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}));
+    throw new Error(detail.detail || `Repurposing failed (${res.status})`);
+  }
+  return res.json();
+}
+
+export async function saveRepurposedAssetToQueue(
+  brandSlug: string,
+  platform: string,
+  assetType: string,
+  contentText: string,
+  title?: string
+) {
+  const res = await fetch(`${API_BASE_URL}/repurpose/save-to-queue`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      brand_slug: brandSlug,
+      platform,
+      asset_type: assetType,
+      content_text: contentText,
+      title,
+    }),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}));
+    throw new Error(detail.detail || `Saving to queue failed (${res.status})`);
+  }
+  return res.json();
+}
+
