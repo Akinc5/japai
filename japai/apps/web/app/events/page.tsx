@@ -152,7 +152,7 @@ export default function EventsPage() {
                   ))}
                 </ul>
                 <div style={{ marginTop: "8px", fontSize: "0.8rem", color: "#34d399", fontWeight: 600 }}>
-                  🎯 Preconfigured CTA: "{evt.default_cta}"
+                  🎯 Preconfigured CTA: &quot;{evt.default_cta}&quot;
                 </div>
               </div>
             </div>

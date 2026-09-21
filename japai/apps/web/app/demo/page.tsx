@@ -510,7 +510,7 @@ export default function DemoPage() {
         <div style={{ marginTop: 40, borderTop: "1px solid #27272a", paddingTop: 20 }}>
           <h2 style={{ fontSize: 16, marginBottom: 4 }}>Recorded examples</h2>
           <p style={{ color: "#71717a", fontSize: 13, marginTop: 0 }}>
-            Real runs captured earlier and saved verbatim — useful if you'd rather not wait
+            Real runs captured earlier and saved verbatim — useful if you&apos;d rather not wait
             for a live generation. Clearly labelled as replays, not live results.
           </p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>

@@ -297,7 +297,7 @@ export default function LeadsPage() {
                     paddingLeft: 10,
                   }}
                 >
-                  "{lead.outreach.body_preview}…"
+                  &quot;{lead.outreach.body_preview}…&quot;
                 </p>
               )}
               <ScoreBreakdown lead={lead} />
