@@ -26,8 +26,9 @@ export default function LanguageBadge({
         display: "inline-flex",
         alignItems: "center",
         gap: 4,
-        background: isEnglish ? "#374151" : "#1e3a8a",
-        color: isEnglish ? "#d1d5db" : "#bfdbfe",
+        background: isEnglish ? "#f1f5f9" : "#eff6ff",
+        color: isEnglish ? "#334155" : "#0066cc",
+        border: isEnglish ? "1px solid #cbd5e1" : "1px solid #bfdbfe",
         borderRadius: 4,
         padding: "1px 7px",
         fontSize: 12,
@@ -36,7 +37,7 @@ export default function LanguageBadge({
       }}
     >
       {spec.label}
-      {isLocalized && <span style={{ opacity: 0.75, fontWeight: 400 }}>localized</span>}
+      {isLocalized && <span style={{ opacity: 0.85, fontWeight: 400 }}>localized</span>}
     </span>
   );
 }

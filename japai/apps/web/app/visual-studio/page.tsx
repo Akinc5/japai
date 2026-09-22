@@ -43,123 +43,136 @@ export default function VisualStudioPage() {
   };
 
   return (
-    <main style={{ padding: "2.5rem", maxWidth: 1000, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
-      <header style={{ marginBottom: "2rem", borderBottom: "1px solid #334155", paddingBottom: "1rem" }}>
+    <main style={{ padding: "2.5rem 1.5rem 4rem", maxWidth: 1000, margin: "0 auto" }}>
+      <header style={{ marginBottom: "2rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "1rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <h1 style={{ fontSize: "1.8rem", fontWeight: 800, margin: 0, color: "#f8fafc" }}>
-              🎨 Visual & Carousel Creative Studio
+            <h1 style={{ fontSize: "1.8rem", fontWeight: 800, margin: 0, color: "#002b49" }}>
+              🎨 Visual &amp; Carousel Creative Studio
             </h1>
-            <p style={{ color: "#94a3b8", marginTop: "0.25rem" }}>
-              Generate brand-aesthetic Midjourney/DALL-E prompts & 5-slide carousel breakdowns.
+            <p style={{ color: "#64748b", marginTop: "0.25rem", fontSize: "0.95rem" }}>
+              Generate brand-aesthetic Midjourney/Flux visual prompts &amp; 5-slide structured educational carousels.
             </p>
           </div>
           <Link
             href="/"
-            style={{ color: "#38bdf8", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}
+            style={{ color: "#0066cc", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}
           >
-            ← Back to OS Hub
+            ← Home
           </Link>
         </div>
       </header>
 
-      {/* Brand Selector */}
-      <section style={{ marginBottom: "1.5rem" }}>
-        <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#cbd5e1", marginBottom: 8 }}>
-          SELECT BRAND VERTICAL:
-        </label>
-        <div style={{ display: "flex", gap: "10px" }}>
-          {BRANDS.map((b) => (
-            <button
-              key={b.slug}
-              onClick={() => handleBrandChange(b.slug)}
+      {/* Configuration Card */}
+      <section
+        style={{
+          background: "#ffffff",
+          border: "1px solid #e2e8f0",
+          borderRadius: "12px",
+          padding: "1.75rem",
+          marginBottom: "2rem",
+          boxShadow: "0 1px 4px rgba(0, 43, 73, 0.04)",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+          {/* Brand Selection */}
+          <div>
+            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#002b49", marginBottom: "0.5rem" }}>
+              Select Insurance Brand Vertical:
+            </label>
+            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+              {BRANDS.map((b) => (
+                <button
+                  key={b.slug}
+                  onClick={() => handleBrandChange(b.slug)}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    fontSize: "0.88rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    background: selectedBrand === b.slug ? "#0066cc" : "#ffffff",
+                    color: selectedBrand === b.slug ? "#ffffff" : "#334155",
+                    border: selectedBrand === b.slug ? "1px solid #0066cc" : "1px solid #cbd5e1",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {b.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Topic Input */}
+          <div>
+            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#002b49", marginBottom: "0.5rem" }}>
+              Creative Theme / Campaign Subject:
+            </label>
+            <input
+              type="text"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="Enter subject or risk scenario..."
               style={{
-                flex: 1,
-                padding: "12px",
-                borderRadius: "8px",
-                border: selectedBrand === b.slug ? "2px solid #38bdf8" : "1px solid #334155",
-                background: selectedBrand === b.slug ? "#0f172a" : "#1e293b",
-                color: "#f8fafc",
-                cursor: "pointer",
-                textAlign: "left",
+                width: "100%",
+                padding: "10px 14px",
+                background: "#f8fafc",
+                border: "1px solid #cbd5e1",
+                borderRadius: "6px",
+                color: "#0f172a",
+                fontSize: "0.95rem",
+                outline: "none",
               }}
-            >
-              <div style={{ fontWeight: 700, fontSize: "0.95rem" }}>{b.name}</div>
-              <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>{b.tag}</div>
-            </button>
-          ))}
-        </div>
-      </section>
+            />
+          </div>
 
-      {/* Form Controls */}
-      <section style={{ background: "#1e293b", padding: "1.5rem", borderRadius: "10px", marginBottom: "2rem" }}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#cbd5e1", marginBottom: 6 }}>
-            MARKETING TOPIC / SCENARIO:
-          </label>
-          <input
-            type="text"
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "6px",
-              border: "1px solid #475569",
-              background: "#0f172a",
-              color: "#f8fafc",
-              fontSize: "0.95rem",
-              boxSizing: "border-box",
-            }}
-          />
-        </div>
-
-        <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-          <div style={{ flex: 1 }}>
-            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#cbd5e1", marginBottom: 6 }}>
-              OUTPUT PLATFORM FORMAT:
+          {/* Platform / Format Selection */}
+          <div>
+            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#002b49", marginBottom: "0.5rem" }}>
+              Target Visual Format:
             </label>
             <select
               value={platform}
               onChange={(e) => setPlatform(e.target.value)}
               style={{
-                width: "100%",
-                padding: "10px",
+                padding: "8px 12px",
+                background: "#ffffff",
+                border: "1px solid #cbd5e1",
                 borderRadius: "6px",
-                border: "1px solid #475569",
-                background: "#0f172a",
-                color: "#f8fafc",
-                fontSize: "0.95rem",
+                color: "#0f172a",
+                fontSize: "0.9rem",
+                outline: "none",
               }}
             >
-              <option value="instagram_carousel">Instagram Carousel (4:5 / 1:1)</option>
-              <option value="linkedin_post">LinkedIn Hero Image (16:9)</option>
-              <option value="reel_script">Reel Cover / Video Prompt (9:16)</option>
+              <option value="instagram_carousel">5-Slide Educational Carousel (Instagram / LinkedIn)</option>
+              <option value="hero_banner">Editorial Hero Keyframe (16:9 Midjourney Prompt)</option>
+              <option value="square_feed">Social Grid Post (1:1 Aspect Ratio)</option>
             </select>
           </div>
 
+          {/* Action Trigger */}
           <button
             onClick={handleGenerate}
-            disabled={loading}
+            disabled={loading || !topic.trim()}
             style={{
-              marginTop: "22px",
-              padding: "12px 24px",
+              padding: "11px 22px",
+              background: loading ? "#94a3b8" : "#0066cc",
+              color: "white",
               borderRadius: "6px",
-              background: loading ? "#64748b" : "#0284c7",
-              color: "#ffffff",
               fontWeight: 700,
               fontSize: "0.95rem",
               border: "none",
               cursor: loading ? "not-allowed" : "pointer",
+              alignSelf: "flex-start",
             }}
           >
-            {loading ? "Generating Creative..." : "✨ Generate Creative Package"}
+            {loading ? "Generating Creative Package..." : "✨ Generate Creative Package"}
           </button>
         </div>
       </section>
 
       {error && (
-        <div style={{ padding: "12px", background: "#7f1d1d", color: "#fecaca", borderRadius: 8, marginBottom: "1.5rem" }}>
+        <div style={{ padding: "12px 16px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", borderRadius: 8, marginBottom: "1.5rem" }}>
           <strong>Error:</strong> {error}
         </div>
       )}
@@ -168,61 +181,57 @@ export default function VisualStudioPage() {
       {result && (
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {/* Hero Image Prompt Box */}
-          <div style={{ background: "#0f172a", border: "1px solid #0284c7", borderRadius: 10, padding: "1.5rem" }}>
+          <div style={{ background: "#ffffff", border: "1px solid #0066cc", borderRadius: 10, padding: "1.5rem", boxShadow: "0 1px 4px rgba(0, 43, 73, 0.04)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <h3 style={{ margin: 0, color: "#38bdf8", fontSize: "1.1rem" }}>
-                🖼️ Midjourney / Flux Hero Image Prompt
+              <h3 style={{ margin: 0, color: "#0066cc", fontSize: "1.1rem", fontWeight: 700 }}>
+                🖼️ Midjourney / Flux Hero Image Blueprint
               </h3>
-              <span style={{ fontSize: "0.8rem", background: "#0369a1", color: "white", padding: "4px 8px", borderRadius: 4 }}>
-                Ratio: {result.creative.aspect_ratio}
+              <span style={{ fontSize: "0.8rem", background: "#e0f2fe", color: "#0369a1", padding: "4px 8px", borderRadius: 4, fontWeight: 700 }}>
+                Ratio: {result.creative?.aspect_ratio || "16:9"}
               </span>
             </div>
-            <div style={{ background: "#1e293b", padding: "12px", borderRadius: 6, color: "#e2e8f0", fontSize: "0.95rem", lineHeight: 1.5 }}>
-              <code>{result.creative.hero_image_prompt}</code>
+            <div style={{ background: "#f8fafc", padding: "12px", borderRadius: 6, color: "#0f172a", fontSize: "0.95rem", lineHeight: 1.5, border: "1px solid #e2e8f0" }}>
+              <code>{result.creative?.hero_image_prompt}</code>
             </div>
-            <div style={{ marginTop: 8, fontSize: "0.8rem", color: "#94a3b8" }}>
-              <strong>Negative Filters:</strong> {result.creative.negative_prompt}
+            <div style={{ marginTop: 8, fontSize: "0.85rem", color: "#64748b" }}>
+              <strong style={{ color: "#0f172a" }}>Negative Filters:</strong> {result.creative?.negative_prompt}
             </div>
           </div>
 
           {/* 5-Slide Carousel Breakdown */}
-          <div style={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 10, padding: "1.5rem" }}>
-            <h3 style={{ margin: "0 0 1rem 0", color: "#f8fafc", fontSize: "1.1rem" }}>
+          <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 10, padding: "1.5rem", boxShadow: "0 1px 4px rgba(0, 43, 73, 0.04)" }}>
+            <h3 style={{ margin: "0 0 1rem 0", color: "#002b49", fontSize: "1.1rem", fontWeight: 700 }}>
               📱 5-Slide Structured Carousel Sequence
             </h3>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "12px" }}>
               {(result.creative?.carousel_slides || []).map((slide) => (
                 <div
                   key={slide.slide_number}
                   style={{
-                    background: "#1e293b",
+                    background: "#f8fafc",
                     padding: "14px",
                     borderRadius: "8px",
-                    borderTop: `4px solid ${slide.slide_number === 5 ? "#10b981" : "#38bdf8"}`,
+                    border: "1px solid #e2e8f0",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                    <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#94a3b8" }}>
-                      SLIDE {slide.slide_number}
-                    </span>
-                    {slide.slide_number === 5 && (
-                      <span style={{ fontSize: "0.7rem", color: "#10b981", fontWeight: 700 }}>CTA</span>
-                    )}
-                  </div>
-                  <div style={{ fontSize: "0.75rem", color: "#38bdf8", marginBottom: 6, fontStyle: "italic" }}>
-                    👁️ {slide.visual_cue}
-                  </div>
-                  <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#f8fafc", marginBottom: 6 }}>
-                    {slide.headline}
-                  </div>
-                  <div style={{ fontSize: "0.8rem", color: "#cbd5e1", lineHeight: 1.4 }}>
-                    {slide.body_copy}
-                  </div>
-                  {slide.cta && (
-                    <div style={{ marginTop: 8, fontSize: "0.75rem", color: "#34d399", fontWeight: 600 }}>
-                      👉 {slide.cta}
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#0066cc", background: "#e0f2fe", padding: "2px 6px", borderRadius: 4 }}>
+                        SLIDE {slide.slide_number}
+                      </span>
+                      <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>{slide.role}</span>
                     </div>
-                  )}
+                    <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#002b49", marginBottom: "6px" }}>
+                      {slide.headline}
+                    </div>
+                    <div style={{ fontSize: "0.85rem", color: "#475569", lineHeight: 1.45 }}>{slide.body}</div>
+                  </div>
+                  <div style={{ marginTop: "10px", fontSize: "0.78rem", color: "#0066cc", background: "#ffffff", padding: "6px 8px", borderRadius: 4, border: "1px solid #e2e8f0" }}>
+                    🎨 <strong>Visual:</strong> {slide.visual_direction}
+                  </div>
                 </div>
               ))}
             </div>

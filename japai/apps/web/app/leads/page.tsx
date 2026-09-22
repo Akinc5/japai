@@ -4,50 +4,52 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   API_BASE_URL,
+  fetchBrands,
   fetchLeads,
   generateLeads,
   fetchLiveSingaporeBusinesses,
   Lead,
-  LeadOutreach,
+  OutreachDraft,
   LiveOsmBusiness,
 } from "@/lib/api";
 
 const COMPONENT_LABELS: Record<string, string> = {
-  category_match: "Category match",
-  size_fit: "Size fit",
-  location_match: "Location match",
-  signal_bonus: "Signal bonus",
+  category: "Business category match",
+  size: "Company size (employees)",
+  location: "Location relevance",
+  signals: "Active intent signals",
 };
 
-function OutreachBadge({ outreach }: { outreach: LeadOutreach | null }) {
+function OutreachBadge({ outreach }: { outreach: OutreachDraft | null }) {
   if (!outreach) {
-    return <span style={{ color: "#888", fontSize: 13 }}>No outreach drafted</span>;
+    return <span style={{ color: "#94a3b8", fontSize: 12 }}>no draft</span>;
   }
-
-  const palette: Record<string, { bg: string; fg: string; label: string }> = {
-    submitted_for_review: { bg: "#78350f", fg: "#fde68a", label: "Pending review" },
-    approved: { bg: "#14532d", fg: "#bbf7d0", label: "Approved" },
-    rejected: { bg: "#7f1d1d", fg: "#fecaca", label: "Rejected by compliance" },
-    draft: { bg: "#1e3a5f", fg: "#bfdbfe", label: "Draft" },
+  const statusColors: Record<string, { bg: string; fg: string; border: string }> = {
+    pending_review: { bg: "#fffbeb", fg: "#b45309", border: "#fde68a" },
+    approved: { bg: "#ecfdf5", fg: "#047857", border: "#a7f3d0" },
+    rejected: { bg: "#fef2f2", fg: "#b91c1c", border: "#fecaca" },
   };
-  const style = palette[outreach.status] ?? { bg: "#374151", fg: "#e5e7eb", label: outreach.status };
+  const style = statusColors[outreach.status] ?? { bg: "#f1f5f9", fg: "#475569", border: "#cbd5e1" };
 
   return (
-    <span style={{ display: "inline-flex", gap: 8, alignItems: "center", fontSize: 13 }}>
+    <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
       <span
         style={{
           background: style.bg,
           color: style.fg,
-          borderRadius: 4,
+          border: `1px solid ${style.border}`,
           padding: "2px 8px",
-          fontWeight: 600,
+          borderRadius: 4,
+          fontSize: 11,
+          fontWeight: 700,
         }}
       >
-        {style.label}
+        draft: {outreach.status}
       </span>
-      {outreach.risk_level && <span style={{ color: "#999" }}>risk: {outreach.risk_level}</span>}
-      {outreach.status === "submitted_for_review" && (
-        <Link href={`/review/${outreach.content_version_id}`}>open in review →</Link>
+      {outreach.content_version_id && (
+        <Link href={`/review/${outreach.content_version_id}`} style={{ color: "#0066cc", fontSize: 12, fontWeight: 600 }}>
+          open in review →
+        </Link>
       )}
     </span>
   );
@@ -58,32 +60,30 @@ function ScoreBreakdown({ lead }: { lead: Lead }) {
   if (!b) return null;
 
   return (
-    <div style={{ marginTop: 10, fontSize: 13 }}>
-      <table style={{ borderCollapse: "collapse" }}>
+    <div style={{ marginTop: 10, fontSize: 13, background: "#f8fafc", padding: 12, borderRadius: 6, border: "1px solid #e2e8f0" }}>
+      <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <tbody>
           {Object.entries(b.components).map(([name, comp]) => (
             <tr key={name}>
-              <td style={{ padding: "2px 12px 2px 0", color: "#999" }}>
+              <td style={{ padding: "3px 0", color: "#64748b" }}>
                 {COMPONENT_LABELS[name] ?? name}
               </td>
-              <td style={{ padding: "2px 6px", textAlign: "right" }}>{comp.value}</td>
-              <td style={{ padding: "2px 6px", color: "#777" }}>×{comp.weight}</td>
-              <td style={{ padding: "2px 6px", textAlign: "right" }}>= {comp.points}</td>
+              <td style={{ padding: "3px 6px", textAlign: "right", color: "#0f172a" }}>{comp.value}</td>
+              <td style={{ padding: "3px 6px", color: "#94a3b8" }}>×{comp.weight}</td>
+              <td style={{ padding: "3px 6px", textAlign: "right", fontWeight: 600, color: "#0066cc" }}>= {comp.points}</td>
             </tr>
           ))}
-          <tr style={{ borderTop: "1px solid #444" }}>
-            <td style={{ padding: "4px 12px 2px 0" }}>
-              <strong>Total</strong>
-            </td>
+          <tr style={{ borderTop: "1px solid #cbd5e1" }}>
+            <td style={{ padding: "5px 0", fontWeight: 700, color: "#002b49" }}>Total Fit Score</td>
             <td />
             <td />
-            <td style={{ padding: "4px 6px 2px", textAlign: "right" }}>
-              <strong>{b.raw_total}</strong>
+            <td style={{ padding: "5px 6px", textAlign: "right", fontWeight: 800, color: "#0066cc" }}>
+              {b.raw_total}
             </td>
           </tr>
         </tbody>
       </table>
-      <div style={{ color: "#777", marginTop: 4 }}>{b.formula}</div>
+      <div style={{ color: "#64748b", marginTop: 6, fontSize: 11 }}>Formula: {b.formula}</div>
     </div>
   );
 }
@@ -100,19 +100,15 @@ export default function LeadsPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/brands`)
-      .then((r) => r.json())
+    fetchBrands()
       .then((bs) => {
-        if (Array.isArray(bs)) {
-          setBrands(bs);
-          const jade = bs.find((b: any) => b.slug === "jade") ?? bs[0];
-          if (jade) setBrandId(jade.brand_id);
-          else setError("No brands found");
-        } else {
-          setError("Failed to load brands from API");
-        }
+        setBrands(bs);
+        const jade = bs.find((b: any) => b.slug === "jade") ?? bs[0];
+        if (jade) setBrandId(jade.brand_id);
       })
-      .catch((e) => setError(e.message));
+      .catch((e) => {
+        console.warn("fetchBrands error:", e);
+      });
   }, []);
 
   async function load(id: string) {
@@ -157,16 +153,18 @@ export default function LeadsPage() {
   }
 
   return (
-    <main style={{ padding: "2.5rem", maxWidth: 950, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
+    <main style={{ padding: "2.5rem 1.5rem 4rem", maxWidth: 950, margin: "0 auto" }}>
       <header style={{ marginBottom: "1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <h1 style={{ marginBottom: 4, color: "#f8fafc" }}>🎯 Lead Discovery & Scoring</h1>
-          <p style={{ color: "#94a3b8", marginTop: 0 }}>
+          <h1 style={{ margin: "0 0 4px", fontSize: "1.8rem", fontWeight: 800, color: "#002b49" }}>
+            🎯 Lead Discovery &amp; Scoring
+          </h1>
+          <p style={{ color: "#64748b", margin: 0, fontSize: "0.95rem" }}>
             Live Singapore business prospecting + deterministic fit scoring + compliance-checked outreach.
           </p>
         </div>
-        <Link href="/" style={{ color: "#38bdf8", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>
-          ← Back to OS Hub
+        <Link href="/" style={{ color: "#0066cc", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>
+          ← Home
         </Link>
       </header>
 
@@ -179,9 +177,9 @@ export default function LeadsPage() {
             style={{
               padding: "8px 16px",
               borderRadius: "6px",
-              border: brandId === b.brand_id ? "2px solid #38bdf8" : "1px solid #334155",
-              background: brandId === b.brand_id ? "#0f172a" : "#1e293b",
-              color: "#f8fafc",
+              border: brandId === b.brand_id ? "1.5px solid #0066cc" : "1px solid #cbd5e1",
+              background: brandId === b.brand_id ? "#0066cc" : "#ffffff",
+              color: brandId === b.brand_id ? "#ffffff" : "#334155",
               cursor: "pointer",
               fontWeight: 600,
             }}
@@ -192,20 +190,20 @@ export default function LeadsPage() {
       </div>
 
       {/* Tab Switcher */}
-      <div style={{ display: "flex", borderBottom: "1px solid #334155", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", borderBottom: "1px solid #e2e8f0", marginBottom: "1.5rem" }}>
         <button
           onClick={() => setActiveTab("pipeline")}
           style={{
             padding: "10px 20px",
             background: "none",
             border: "none",
-            borderBottom: activeTab === "pipeline" ? "3px solid #38bdf8" : "none",
-            color: activeTab === "pipeline" ? "#38bdf8" : "#94a3b8",
+            borderBottom: activeTab === "pipeline" ? "3px solid #0066cc" : "none",
+            color: activeTab === "pipeline" ? "#0066cc" : "#64748b",
             fontWeight: 700,
             cursor: "pointer",
           }}
         >
-          📊 Scored Pipeline & Outreach
+          📊 Scored Pipeline &amp; Outreach
         </button>
         <button
           onClick={() => setActiveTab("osm_live")}
@@ -213,8 +211,8 @@ export default function LeadsPage() {
             padding: "10px 20px",
             background: "none",
             border: "none",
-            borderBottom: activeTab === "osm_live" ? "3px solid #38bdf8" : "none",
-            color: activeTab === "osm_live" ? "#38bdf8" : "#94a3b8",
+            borderBottom: activeTab === "osm_live" ? "3px solid #0066cc" : "none",
+            color: activeTab === "osm_live" ? "#0066cc" : "#64748b",
             fontWeight: 700,
             cursor: "pointer",
           }}
@@ -223,23 +221,24 @@ export default function LeadsPage() {
         </button>
       </div>
 
-      {error && <p style={{ color: "#ef4444", background: "#450a0a", padding: "10px", borderRadius: "6px" }}>Error: {error}</p>}
+      {error && <div style={{ color: "#b91c1c", background: "#fef2f2", padding: "10px 14px", borderRadius: "6px", border: "1px solid #fecaca", marginBottom: 16 }}>Error: {error}</div>}
 
       {/* TAB 1: Pipeline */}
       {activeTab === "pipeline" && (
         <>
           <div
             style={{
-              border: "1px solid #78350f",
-              background: "#1c1206",
+              border: "1px solid #e2e8f0",
+              background: "#ffffff",
               borderRadius: 8,
-              padding: "10px 14px",
+              padding: "12px 16px",
               marginBottom: 18,
               fontSize: 13,
-              color: "#fde68a",
+              color: "#334155",
+              boxShadow: "0 1px 3px rgba(0, 43, 73, 0.04)",
             }}
           >
-            <strong>Deterministic Arithmetic Scoring:</strong> Prospects are scored via explicit formula without hallucinated numbers. Outreach drafts go through the 4-step compliance gate before human review.
+            <strong style={{ color: "#002b49" }}>Deterministic Scoring:</strong> Prospects are scored via explicit formula without hallucinated numbers. Outreach drafts pass through the 4-step compliance gate.
           </div>
 
           <button
@@ -249,40 +248,35 @@ export default function LeadsPage() {
               marginBottom: 18,
               padding: "10px 20px",
               borderRadius: 6,
-              background: "#4f46e5",
+              background: busy ? "#94a3b8" : "#0066cc",
               color: "white",
               fontWeight: 700,
               border: "none",
-              cursor: "pointer",
+              cursor: busy ? "not-allowed" : "pointer",
             }}
           >
-            {busy ? "Generating… (3 LLM calls)" : "⚡ Generate Scored Leads + Outreach"}
+            {busy ? "Generating Leads..." : "⚡ Generate Scored Leads + Outreach"}
           </button>
 
-          {formula && (
-            <p style={{ color: "#94a3b8", fontSize: 13, marginTop: 0 }}>
-              Scoring Formula: <code>{formula}</code>
-            </p>
-          )}
-
-          {!leads && !error && <p style={{ color: "#94a3b8" }}>Loading leads…</p>}
+          {!leads && !error && <p style={{ color: "#64748b" }}>Loading leads…</p>}
 
           {leads?.map((lead) => (
             <div
               key={lead.lead_id}
               style={{
-                border: "1px solid #334155",
-                background: "#1e293b",
+                border: "1px solid #e2e8f0",
+                background: "#ffffff",
                 borderRadius: 8,
-                padding: "14px 16px",
+                padding: "16px 18px",
                 marginBottom: 14,
+                boxShadow: "0 1px 3px rgba(0, 43, 73, 0.04)",
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <strong style={{ fontSize: "1.1rem", color: "#f8fafc" }}>{lead.company_name}</strong>
-                <span style={{ fontSize: 20, fontWeight: 700, color: "#38bdf8" }}>{lead.fit_score}</span>
+                <strong style={{ fontSize: "1.1rem", color: "#002b49" }}>{lead.company_name}</strong>
+                <span style={{ fontSize: 20, fontWeight: 800, color: "#0066cc" }}>{lead.fit_score}</span>
               </div>
-              <div style={{ color: "#94a3b8", fontSize: 13, marginTop: 4 }}>
+              <div style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>
                 {lead.category} · {lead.location}
                 {lead.employee_count !== null && <> · {lead.employee_count} staff</>} · source:{" "}
                 <code>{lead.source}</code>
@@ -293,12 +287,15 @@ export default function LeadsPage() {
               {lead.outreach?.body_preview && (
                 <p
                   style={{
-                    color: "#cbd5e1",
+                    color: "#334155",
                     fontSize: 13,
                     fontStyle: "italic",
-                    margin: "8px 0 0",
-                    borderLeft: "2px solid #38bdf8",
+                    margin: "10px 0 0",
+                    borderLeft: "3px solid #0066cc",
                     paddingLeft: 10,
+                    background: "#f8fafc",
+                    padding: "8px 10px",
+                    borderRadius: "0 4px 4px 0",
                   }}
                 >
                   &quot;{lead.outreach.body_preview}…&quot;
@@ -315,20 +312,20 @@ export default function LeadsPage() {
         <div>
           <div
             style={{
-              border: "1px solid #0369a1",
-              background: "#082f49",
+              border: "1px solid #bfdbfe",
+              background: "#eff6ff",
               borderRadius: 8,
-              padding: "10px 14px",
+              padding: "12px 16px",
               marginBottom: 18,
               fontSize: 13,
-              color: "#bae6fd",
+              color: "#1e40af",
             }}
           >
-            <strong>🌐 Live OpenStreetMap (Singapore):</strong> Real commercial entities discovered in Singapore for this vertical. (Sharveswar submission integration).
+            <strong>🌐 Live OpenStreetMap (Singapore):</strong> Real registered commercial entities queried live via Overpass API for this vertical.
           </div>
 
           {osmLoading ? (
-            <div style={{ color: "#94a3b8", padding: "2rem", textAlign: "center" }}>
+            <div style={{ color: "#64748b", padding: "2rem", textAlign: "center" }}>
               Querying Singapore Overpass nodes for commercial entities...
             </div>
           ) : (
@@ -337,22 +334,23 @@ export default function LeadsPage() {
                 <div
                   key={biz.id}
                   style={{
-                    background: "#1e293b",
-                    border: "1px solid #334155",
+                    background: "#ffffff",
+                    border: "1px solid #e2e8f0",
                     borderRadius: "8px",
                     padding: "14px",
+                    boxShadow: "0 1px 3px rgba(0, 43, 73, 0.04)",
                   }}
                 >
-                  <div style={{ fontWeight: 700, color: "#f8fafc", fontSize: "1rem", marginBottom: 4 }}>
+                  <div style={{ fontWeight: 700, color: "#002b49", fontSize: "1rem", marginBottom: 4 }}>
                     {biz.name}
                   </div>
-                  <div style={{ fontSize: "0.8rem", color: "#38bdf8", marginBottom: 6 }}>
+                  <div style={{ fontSize: "0.82rem", color: "#0066cc", fontWeight: 600, marginBottom: 4 }}>
                     🏢 {biz.category}
                   </div>
-                  <div style={{ fontSize: "0.8rem", color: "#cbd5e1", marginBottom: 4 }}>
+                  <div style={{ fontSize: "0.82rem", color: "#475569", marginBottom: 4 }}>
                     📍 {biz.address}
                   </div>
-                  <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginBottom: 8 }}>
+                  <div style={{ fontSize: "0.8rem", color: "#64748b", marginBottom: 6 }}>
                     📞 {biz.phone}
                   </div>
                   {biz.website && (
@@ -360,24 +358,11 @@ export default function LeadsPage() {
                       href={biz.website}
                       target="_blank"
                       rel="noreferrer"
-                      style={{ fontSize: "0.75rem", color: "#38bdf8" }}
+                      style={{ fontSize: "0.8rem", color: "#0066cc", wordBreak: "break-all" }}
                     >
                       🔗 {biz.website}
                     </a>
                   )}
-                  <div style={{ marginTop: 10 }}>
-                    <span
-                      style={{
-                        fontSize: "0.7rem",
-                        background: "#0f172a",
-                        color: "#94a3b8",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      Source: {biz.source}
-                    </span>
-                  </div>
                 </div>
               ))}
             </div>

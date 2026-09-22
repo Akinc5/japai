@@ -25,11 +25,13 @@ export default function RepurposePage() {
   useEffect(() => {
     fetchMasterclassTemplates()
       .then((data) => {
-        setTemplates(data);
-        if (data.length > 0) {
-          setSelectedBrand(data[0].brand_slug);
-          setDocTitle(data[0].title);
-          setSourceText(data[0].content);
+        if (Array.isArray(data)) {
+          setTemplates(data);
+          if (data.length > 0) {
+            setSelectedBrand(data[0].brand_slug);
+            setDocTitle(data[0].title);
+            setSourceText(data[0].content);
+          }
         }
       })
       .catch((err) => console.error("Failed to load templates:", err));
@@ -89,42 +91,42 @@ export default function RepurposePage() {
   };
 
   return (
-    <main style={{ padding: "2.5rem", maxWidth: 1100, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
-      <header style={{ marginBottom: "2rem", borderBottom: "1px solid #334155", paddingBottom: "1rem" }}>
+    <main style={{ padding: "2.5rem 1.5rem 4rem", maxWidth: 1100, margin: "0 auto" }}>
+      <header style={{ marginBottom: "2rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "1rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.25rem" }}>
-              <h1 style={{ fontSize: "1.8rem", fontWeight: 800, margin: 0, color: "#f8fafc" }}>
-                📚 Insurtech 101 Knowledge Repurposing Agent
+              <h1 style={{ fontSize: "1.8rem", fontWeight: 800, margin: 0, color: "#002b49" }}>
+                📚 Content Repurposing Engine
               </h1>
               <span
                 style={{
-                  background: "#6366f122",
-                  color: "#818cf8",
-                  border: "1px solid #6366f144",
+                  background: "#eff6ff",
+                  color: "#0066cc",
+                  border: "1px solid #bfdbfe",
                   padding: "2px 8px",
                   borderRadius: "4px",
                   fontSize: "0.75rem",
                   fontWeight: 700,
                 }}
               >
-                HACKATHON BONUS
+                MULTI-CHANNEL
               </span>
             </div>
-            <p style={{ color: "#94a3b8", marginTop: "0.25rem", fontSize: "0.95rem" }}>
+            <p style={{ color: "#64748b", marginTop: "0.25rem", fontSize: "0.95rem" }}>
               Transform complex insurance policy whitepapers, case studies, and masterclass guides into high-converting,
               compliance-gated multi-channel nurture kits.
             </p>
           </div>
-          <Link href="/" style={{ color: "#38bdf8", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>
-            ← Back to OS Hub
+          <Link href="/" style={{ color: "#0066cc", textDecoration: "none", fontSize: "0.9rem", fontWeight: 600 }}>
+            ← Home
           </Link>
         </div>
       </header>
 
       {/* Quick Template Selector */}
       <section style={{ marginBottom: "1.5rem" }}>
-        <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#cbd5e1", marginBottom: "0.5rem" }}>
+        <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#002b49", marginBottom: "0.5rem" }}>
           ⚡ 1-Click Load Masterclass Whitepapers / Case Studies:
         </label>
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
@@ -133,15 +135,15 @@ export default function RepurposePage() {
               key={tpl.id}
               onClick={() => handleSelectTemplate(tpl)}
               style={{
-                background: docTitle === tpl.title ? "#1e293b" : "#0f172a",
-                border: docTitle === tpl.title ? "1px solid #38bdf8" : "1px solid #334155",
-                color: docTitle === tpl.title ? "#38bdf8" : "#94a3b8",
+                background: docTitle === tpl.title ? "#0066cc" : "#ffffff",
+                border: docTitle === tpl.title ? "1px solid #0066cc" : "1px solid #cbd5e1",
+                color: docTitle === tpl.title ? "#ffffff" : "#334155",
                 padding: "8px 14px",
                 borderRadius: "6px",
                 fontSize: "0.85rem",
                 cursor: "pointer",
                 fontWeight: 600,
-                transition: "all 0.2s ease",
+                transition: "all 0.15s ease",
               }}
             >
               📖 {tpl.title}
@@ -153,16 +155,17 @@ export default function RepurposePage() {
       {/* Input Form */}
       <div
         style={{
-          background: "#0f172a",
-          border: "1px solid #1e293b",
+          background: "#ffffff",
+          border: "1px solid #e2e8f0",
           borderRadius: "12px",
-          padding: "1.5rem",
+          padding: "1.75rem",
           marginBottom: "2rem",
+          boxShadow: "0 1px 4px rgba(0, 43, 73, 0.04)",
         }}
       >
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 200px", gap: "1rem", marginBottom: "1rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: "1rem", marginBottom: "1rem" }}>
           <div>
-            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#cbd5e1", marginBottom: "0.25rem" }}>
+            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#002b49", marginBottom: "0.25rem" }}>
               Document / Masterclass Topic:
             </label>
             <input
@@ -174,15 +177,15 @@ export default function RepurposePage() {
                 width: "100%",
                 padding: "10px 12px",
                 borderRadius: "6px",
-                border: "1px solid #334155",
-                background: "#1e293b",
-                color: "#f8fafc",
+                border: "1px solid #cbd5e1",
+                background: "#f8fafc",
+                color: "#0f172a",
                 fontSize: "0.9rem",
               }}
             />
           </div>
           <div>
-            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 600, color: "#cbd5e1", marginBottom: "0.25rem" }}>
+            <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#002b49", marginBottom: "0.25rem" }}>
               Target Brand:
             </label>
             <select
@@ -192,9 +195,9 @@ export default function RepurposePage() {
                 width: "100%",
                 padding: "10px 12px",
                 borderRadius: "6px",
-                border: "1px solid #334155",
-                background: "#1e293b",
-                color: "#f8fafc",
+                border: "1px solid #cbd5e1",
+                background: "#ffffff",
+                color: "#0f172a",
                 fontSize: "0.9rem",
               }}
             >
@@ -207,13 +210,13 @@ export default function RepurposePage() {
 
         <div style={{ marginBottom: "1.25rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: 600, color: "#cbd5e1" }}>
-              Source Material (Whitepaper / Case Study / Complex Policy Clauses):
+            <label style={{ fontSize: "0.85rem", fontWeight: 700, color: "#002b49" }}>
+              Source Material (Whitepaper / Case Study / Policy Clauses):
             </label>
             <span style={{ fontSize: "0.75rem", color: "#64748b" }}>{sourceText.length} characters</span>
           </div>
           <textarea
-            rows={7}
+            rows={6}
             value={sourceText}
             onChange={(e) => setSourceText(e.target.value)}
             placeholder="Paste raw insurance training material, policy wording, or masterclass transcript here..."
@@ -221,37 +224,32 @@ export default function RepurposePage() {
               width: "100%",
               padding: "12px",
               borderRadius: "8px",
-              border: "1px solid #334155",
-              background: "#1e293b",
-              color: "#f8fafc",
+              border: "1px solid #cbd5e1",
+              background: "#f8fafc",
+              color: "#0f172a",
               fontSize: "0.88rem",
               lineHeight: 1.5,
-              fontFamily: "monospace",
               resize: "vertical",
             }}
           />
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
           <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
-            🛡️ Automatically checked against MAS Notice 124 & brand guidelines before emission.
+            🛡️ Automatically audited against MAS Advertising Rules before release.
           </span>
           <button
             onClick={handleRepurpose}
             disabled={loading || !sourceText.trim()}
             style={{
-              background: loading ? "#475569" : "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+              background: loading ? "#94a3b8" : "#0066cc",
               color: "#fff",
               border: "none",
-              padding: "12px 24px",
-              borderRadius: "8px",
+              padding: "11px 22px",
+              borderRadius: "6px",
               fontWeight: 700,
               fontSize: "0.95rem",
               cursor: loading ? "not-allowed" : "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              boxShadow: "0 4px 14px rgba(99, 102, 241, 0.3)",
             }}
           >
             {loading ? "⚙️ Repurposing with Gemini..." : "✨ Repurpose into Multi-Channel Kit"}
@@ -265,9 +263,9 @@ export default function RepurposePage() {
             padding: "14px",
             borderRadius: "8px",
             marginBottom: "1.5rem",
-            background: queueStatus.type === "success" ? "#064e3b" : "#7f1d1d",
-            color: queueStatus.type === "success" ? "#a7f3d0" : "#fecaca",
-            border: `1px solid ${queueStatus.type === "success" ? "#059669" : "#dc2626"}`,
+            background: queueStatus.type === "success" ? "#ecfdf5" : "#fef2f2",
+            color: queueStatus.type === "success" ? "#047857" : "#b91c1c",
+            border: `1px solid ${queueStatus.type === "success" ? "#a7f3d0" : "#fecaca"}`,
             fontSize: "0.9rem",
             display: "flex",
             justifyContent: "space-between",
@@ -279,7 +277,7 @@ export default function RepurposePage() {
             <Link
               href="/review"
               style={{
-                color: "#6ee7b7",
+                color: "#047857",
                 textDecoration: "underline",
                 fontWeight: 700,
                 fontSize: "0.85rem",
@@ -295,123 +293,64 @@ export default function RepurposePage() {
       {result && (
         <section
           style={{
-            background: "#0f172a",
-            border: "1px solid #1e293b",
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
             borderRadius: "12px",
-            padding: "1.5rem",
+            padding: "1.75rem",
+            boxShadow: "0 1px 4px rgba(0, 43, 73, 0.04)",
           }}
         >
           {/* Executive Insights Bar */}
           <div
             style={{
-              background: "#1e293b",
+              background: "#eff6ff",
               borderRadius: "8px",
               padding: "1.25rem",
               marginBottom: "1.5rem",
-              borderLeft: "4px solid #6366f1",
+              borderLeft: "4px solid #0066cc",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
-              <div>
-                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#818cf8", textTransform: "uppercase" }}>
-                  Synthesized Executive Synopsis
-                </span>
-                <p style={{ margin: "0.25rem 0 0 0", color: "#f8fafc", fontSize: "0.95rem", lineHeight: 1.5 }}>
-                  {result.executive_summary}
-                </p>
-              </div>
-              <div style={{ textAlign: "right", minWidth: 160 }}>
-                <span
-                  style={{
-                    background: result.compliance_check.passed ? "#064e3b" : "#78350f",
-                    color: result.compliance_check.passed ? "#a7f3d0" : "#fde68a",
-                    padding: "4px 8px",
-                    borderRadius: "4px",
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                  }}
-                >
-                  {result.compliance_check.passed ? "🛡️ MAS Passed" : "⚠️ Compliance Review"}
-                </span>
-              </div>
-            </div>
-
-            <div style={{ display: "flex", gap: "1.5rem", marginTop: "0.75rem", fontSize: "0.85rem", color: "#94a3b8" }}>
-              <div>
-                <strong style={{ color: "#cbd5e1" }}>Audience:</strong> {result.target_audience}
-              </div>
-              <div>
-                <strong style={{ color: "#cbd5e1" }}>Key Focus:</strong> {result.key_takeaways?.join(" • ") || "Specialist Risk Management"}
-              </div>
-            </div>
+            <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#0066cc", textTransform: "uppercase" }}>
+              Synthesized Executive Synopsis
+            </span>
+            <p style={{ margin: "0.25rem 0 0 0", color: "#002b49", fontSize: "0.95rem", lineHeight: 1.5, fontWeight: 500 }}>
+              {result.executive_summary}
+            </p>
           </div>
 
-          {/* Tab Navigation */}
-          <div style={{ display: "flex", borderBottom: "1px solid #334155", marginBottom: "1.5rem", gap: "0.5rem" }}>
-            <button
-              onClick={() => setActiveTab("linkedin")}
-              style={{
-                background: activeTab === "linkedin" ? "#1e293b" : "transparent",
-                border: "none",
-                borderBottom: activeTab === "linkedin" ? "2px solid #38bdf8" : "none",
-                color: activeTab === "linkedin" ? "#38bdf8" : "#94a3b8",
-                padding: "10px 16px",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                cursor: "pointer",
-                borderRadius: "6px 6px 0 0",
-              }}
-            >
-              💼 LinkedIn Executive Post
-            </button>
-            <button
-              onClick={() => setActiveTab("carousel")}
-              style={{
-                background: activeTab === "carousel" ? "#1e293b" : "transparent",
-                border: "none",
-                borderBottom: activeTab === "carousel" ? "2px solid #ec4899" : "none",
-                color: activeTab === "carousel" ? "#ec4899" : "#94a3b8",
-                padding: "10px 16px",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                cursor: "pointer",
-                borderRadius: "6px 6px 0 0",
-              }}
-            >
-              🖼️ 5-Slide Infographic Carousel ({result.carousel_deck?.slides?.length || 5} Slides)
-            </button>
-            <button
-              onClick={() => setActiveTab("x_thread")}
-              style={{
-                background: activeTab === "x_thread" ? "#1e293b" : "transparent",
-                border: "none",
-                borderBottom: activeTab === "x_thread" ? "2px solid #f59e0b" : "none",
-                color: activeTab === "x_thread" ? "#f59e0b" : "#94a3b8",
-                padding: "10px 16px",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                cursor: "pointer",
-                borderRadius: "6px 6px 0 0",
-              }}
-            >
-              🐦 X (Twitter) Thread ({result.x_thread?.length || 4} Posts)
-            </button>
-            <button
-              onClick={() => setActiveTab("email")}
-              style={{
-                background: activeTab === "email" ? "#1e293b" : "transparent",
-                border: "none",
-                borderBottom: activeTab === "email" ? "2px solid #10b981" : "none",
-                color: activeTab === "email" ? "#10b981" : "#94a3b8",
-                padding: "10px 16px",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                cursor: "pointer",
-                borderRadius: "6px 6px 0 0",
-              }}
-            >
-              ✉️ High-Conversion B2B Email
-            </button>
+          {/* Format Tabs */}
+          <div
+            style={{
+              display: "flex",
+              gap: "0.5rem",
+              borderBottom: "1px solid #e2e8f0",
+              marginBottom: "1.5rem",
+              overflowX: "auto",
+            }}
+          >
+            {[
+              { id: "linkedin", label: "💼 LinkedIn Executive Post" },
+              { id: "carousel", label: "📱 5-Slide Carousel Breakdown" },
+              { id: "x_thread", label: "🧵 X (Twitter) Thread" },
+              { id: "email", label: "✉️ B2B Outreach Pitch" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                style={{
+                  background: activeTab === tab.id ? "#0066cc" : "transparent",
+                  color: activeTab === tab.id ? "#ffffff" : "#64748b",
+                  border: "none",
+                  padding: "10px 18px",
+                  borderRadius: "6px 6px 0 0",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
           {/* TAB 1: LinkedIn Brief */}
@@ -419,20 +358,20 @@ export default function RepurposePage() {
             <div>
               <div
                 style={{
-                  background: "#1e293b",
+                  background: "#f8fafc",
                   borderRadius: "8px",
                   padding: "1.5rem",
-                  border: "1px solid #334155",
+                  border: "1px solid #e2e8f0",
                   marginBottom: "1rem",
                 }}
               >
-                <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#f8fafc", marginBottom: "1rem" }}>
+                <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#002b49", marginBottom: "1rem" }}>
                   {result.linkedin_brief?.headline}
                 </div>
-                <div style={{ whiteSpace: "pre-wrap", color: "#cbd5e1", fontSize: "0.92rem", lineHeight: 1.6 }}>
+                <div style={{ whiteSpace: "pre-wrap", color: "#0f172a", fontSize: "0.95rem", lineHeight: 1.6 }}>
                   {result.linkedin_brief?.body}
                 </div>
-                <div style={{ marginTop: "1rem", color: "#38bdf8", fontSize: "0.85rem", fontWeight: 600 }}>
+                <div style={{ marginTop: "1rem", color: "#0066cc", fontSize: "0.88rem", fontWeight: 600 }}>
                   {result.linkedin_brief?.hashtags?.join(" ")}
                 </div>
               </div>
@@ -446,9 +385,9 @@ export default function RepurposePage() {
                     )
                   }
                   style={{
-                    background: "#334155",
-                    color: "#f8fafc",
-                    border: "none",
+                    background: "#f1f5f9",
+                    color: "#0f172a",
+                    border: "1px solid #cbd5e1",
                     padding: "8px 16px",
                     borderRadius: "6px",
                     fontWeight: 600,
@@ -464,7 +403,7 @@ export default function RepurposePage() {
                   }
                   disabled={savingToQueue}
                   style={{
-                    background: "#0284c7",
+                    background: "#0066cc",
                     color: "#fff",
                     border: "none",
                     padding: "8px 16px",
@@ -480,7 +419,7 @@ export default function RepurposePage() {
             </div>
           )}
 
-          {/* TAB 2: 5-Slide Carousel Deck */}
+          {/* TAB 2: Carousel */}
           {activeTab === "carousel" && (
             <div>
               <div
@@ -495,8 +434,8 @@ export default function RepurposePage() {
                   <div
                     key={slide.slide_number}
                     style={{
-                      background: "#1e293b",
-                      border: "1px solid #334155",
+                      background: "#f8fafc",
+                      border: "1px solid #e2e8f0",
                       borderRadius: "10px",
                       padding: "1.25rem",
                       display: "flex",
@@ -515,8 +454,8 @@ export default function RepurposePage() {
                       >
                         <span
                           style={{
-                            background: "#ec489922",
-                            color: "#f472b6",
+                            background: "#eff6ff",
+                            color: "#0066cc",
                             padding: "2px 8px",
                             borderRadius: "4px",
                             fontSize: "0.75rem",
@@ -525,12 +464,12 @@ export default function RepurposePage() {
                         >
                           SLIDE {slide.slide_number}
                         </span>
-                        <span style={{ fontSize: "0.75rem", color: "#94a3b8", fontWeight: 600 }}>{slide.role}</span>
+                        <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>{slide.role}</span>
                       </div>
-                      <h4 style={{ margin: "0 0 0.5rem 0", color: "#f8fafc", fontSize: "0.95rem" }}>
+                      <h4 style={{ margin: "0 0 0.5rem 0", color: "#002b49", fontSize: "0.95rem", fontWeight: 700 }}>
                         {slide.headline}
                       </h4>
-                      <p style={{ margin: 0, color: "#cbd5e1", fontSize: "0.85rem", lineHeight: 1.5 }}>
+                      <p style={{ margin: 0, color: "#334155", fontSize: "0.85rem", lineHeight: 1.5 }}>
                         {slide.body}
                       </p>
                     </div>
@@ -538,15 +477,15 @@ export default function RepurposePage() {
                     <div
                       style={{
                         marginTop: "1rem",
-                        padding: "8px",
-                        background: "#0f172a",
+                        padding: "8px 10px",
+                        background: "#ffffff",
                         borderRadius: "6px",
-                        border: "1px solid #334155",
-                        fontSize: "0.75rem",
-                        color: "#a5b4fc",
+                        border: "1px solid #e2e8f0",
+                        fontSize: "0.8rem",
+                        color: "#0066cc",
                       }}
                     >
-                      🎨 <strong>Visual Cue:</strong> {slide.visual_direction}
+                      🎨 <strong>Visual:</strong> {slide.visual_direction}
                     </div>
                   </div>
                 ))}
@@ -558,14 +497,14 @@ export default function RepurposePage() {
                     handleCopy(
                       result.carousel_deck?.slides
                         ?.map((s) => `[Slide ${s.slide_number} - ${s.role}]\n${s.headline}\n${s.body}\nVisual: ${s.visual_direction}`)
-                        .join("\n\n"),
+                        .join("\n\n") || "",
                       "carousel"
                     )
                   }
                   style={{
-                    background: "#334155",
-                    color: "#f8fafc",
-                    border: "none",
+                    background: "#f1f5f9",
+                    color: "#0f172a",
+                    border: "1px solid #cbd5e1",
                     padding: "8px 16px",
                     borderRadius: "6px",
                     fontWeight: 600,
@@ -585,7 +524,7 @@ export default function RepurposePage() {
                   }
                   disabled={savingToQueue}
                   style={{
-                    background: "#ec4899",
+                    background: "#0066cc",
                     color: "#fff",
                     border: "none",
                     padding: "8px 16px",
@@ -609,8 +548,8 @@ export default function RepurposePage() {
                   <div
                     key={item.post_number}
                     style={{
-                      background: "#1e293b",
-                      border: "1px solid #334155",
+                      background: "#f8fafc",
+                      border: "1px solid #e2e8f0",
                       borderRadius: "8px",
                       padding: "1rem",
                       display: "flex",
@@ -619,8 +558,8 @@ export default function RepurposePage() {
                   >
                     <div
                       style={{
-                        background: "#f59e0b22",
-                        color: "#fbbf24",
+                        background: "#e0f2fe",
+                        color: "#0284c7",
                         width: 28,
                         height: 28,
                         borderRadius: "50%",
@@ -635,7 +574,7 @@ export default function RepurposePage() {
                       {item.post_number}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <p style={{ margin: 0, color: "#f8fafc", fontSize: "0.9rem", lineHeight: 1.5 }}>
+                      <p style={{ margin: 0, color: "#0f172a", fontSize: "0.9rem", lineHeight: 1.5 }}>
                         {item.tweet}
                       </p>
                       <span style={{ display: "block", marginTop: "0.5rem", fontSize: "0.75rem", color: "#64748b" }}>
@@ -650,14 +589,14 @@ export default function RepurposePage() {
                 <button
                   onClick={() =>
                     handleCopy(
-                      result.x_thread?.map((t) => `${t.post_number}/${result.x_thread.length} ${t.tweet}`).join("\n\n"),
+                      result.x_thread?.map((t) => `${t.post_number}/${result.x_thread?.length || 0} ${t.tweet}`).join("\n\n") || "",
                       "x_thread"
                     )
                   }
                   style={{
-                    background: "#334155",
-                    color: "#f8fafc",
-                    border: "none",
+                    background: "#f1f5f9",
+                    color: "#0f172a",
+                    border: "1px solid #cbd5e1",
                     padding: "8px 16px",
                     borderRadius: "6px",
                     fontWeight: 600,
@@ -672,12 +611,12 @@ export default function RepurposePage() {
                     handleSendToQueue(
                       "x",
                       "social_post",
-                      result.x_thread?.map((t) => `${t.post_number}/${result.x_thread.length} ${t.tweet}`).join("\n\n") || ""
+                      result.x_thread?.map((t) => `${t.post_number}/${result.x_thread?.length || 0} ${t.tweet}`).join("\n\n") || ""
                     )
                   }
                   disabled={savingToQueue}
                   style={{
-                    background: "#d97706",
+                    background: "#0066cc",
                     color: "#fff",
                     border: "none",
                     padding: "8px 16px",
@@ -698,20 +637,20 @@ export default function RepurposePage() {
             <div>
               <div
                 style={{
-                  background: "#1e293b",
-                  border: "1px solid #334155",
+                  background: "#f8fafc",
+                  border: "1px solid #e2e8f0",
                   borderRadius: "8px",
                   padding: "1.5rem",
                   marginBottom: "1.25rem",
                 }}
               >
-                <div style={{ marginBottom: "1rem", borderBottom: "1px solid #334155", paddingBottom: "0.75rem" }}>
-                  <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>Subject: </span>
-                  <strong style={{ color: "#f8fafc", fontSize: "0.95rem" }}>
+                <div style={{ marginBottom: "1rem", borderBottom: "1px solid #e2e8f0", paddingBottom: "0.75rem" }}>
+                  <span style={{ fontSize: "0.8rem", color: "#64748b" }}>Subject: </span>
+                  <strong style={{ color: "#002b49", fontSize: "0.95rem" }}>
                     {result.outreach_email?.subject}
                   </strong>
                 </div>
-                <div style={{ whiteSpace: "pre-wrap", color: "#cbd5e1", fontSize: "0.92rem", lineHeight: 1.6 }}>
+                <div style={{ whiteSpace: "pre-wrap", color: "#0f172a", fontSize: "0.92rem", lineHeight: 1.6 }}>
                   {result.outreach_email?.body}
                 </div>
               </div>
@@ -725,9 +664,9 @@ export default function RepurposePage() {
                     )
                   }
                   style={{
-                    background: "#334155",
-                    color: "#f8fafc",
-                    border: "none",
+                    background: "#f1f5f9",
+                    color: "#0f172a",
+                    border: "1px solid #cbd5e1",
                     padding: "8px 16px",
                     borderRadius: "6px",
                     fontWeight: 600,
@@ -743,7 +682,7 @@ export default function RepurposePage() {
                   }
                   disabled={savingToQueue}
                   style={{
-                    background: "#059669",
+                    background: "#0066cc",
                     color: "#fff",
                     border: "none",
                     padding: "8px 16px",

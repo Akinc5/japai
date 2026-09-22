@@ -1,4 +1,35 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://japai.onrender.com");
+
+export interface BrandSummary {
+  brand_id: string;
+  slug: string;
+  name: string;
+}
+
+export const FALLBACK_BRANDS: BrandSummary[] = [
+  { brand_id: "jade-default", slug: "jade", name: "Jade (Jewellers Block)" },
+  { brand_id: "jaguar-default", slug: "jaguar-transit", name: "Jaguar Transit" },
+  { brand_id: "doctorshield-default", slug: "doctorshield", name: "DoctorShield" },
+];
+
+export async function fetchBrands(): Promise<BrandSummary[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/brands`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn("Backend warming up, using fallback brands:", err);
+  }
+  return FALLBACK_BRANDS;
+}
 
 export type ComplianceIssue = {
   term: string;
