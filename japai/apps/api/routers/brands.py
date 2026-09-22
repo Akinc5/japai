@@ -34,12 +34,13 @@ def list_brands(db: Session = Depends(get_db)):
         brands = db.query(Brand).order_by(Brand.name).all()
         if not brands:
             try:
-                from db.seed.seed_brands import run as run_seed
+                from db.seed.seed_brands import seed_with_session
 
-                run_seed()
+                seed_with_session(db)
                 brands = db.query(Brand).order_by(Brand.name).all()
             except Exception:
-                pass
+                db.rollback()
+
 
         if brands:
             return [

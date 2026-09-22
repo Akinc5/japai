@@ -1,3 +1,4 @@
+from typing import Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -10,6 +11,7 @@ from apps.api.agents import compliance as compliance_agent
 from apps.api.agents import content as content_agent
 from apps.api.agents import localization as localization_agent
 from apps.api.agents.compliance import RISK_LEVEL_BY_OUTCOME
+from apps.api.core.brand_utils import get_or_resolve_brand
 from apps.api.core.db import get_db
 from apps.api.models import Brand, ComplianceReview, ContentVersion
 
@@ -17,7 +19,7 @@ router = APIRouter(prefix="/content", tags=["content"])
 
 
 class GenerateContentRequest(BaseModel):
-    brand_id: UUID
+    brand_id: Union[str, UUID]
     platform: str
     topic: str
 
@@ -37,14 +39,15 @@ def _compliance_payload(review: ComplianceReview | None) -> dict | None:
 
 @router.post("/generate")
 def generate_content(payload: GenerateContentRequest, db: Session = Depends(get_db)):
-    brand = db.get(Brand, payload.brand_id)
+    brand = get_or_resolve_brand(db, payload.brand_id)
     if brand is None:
         raise HTTPException(status_code=404, detail="Brand not found")
 
     version = content_agent.generate_content(
-        db, brand_id=payload.brand_id, platform=payload.platform, topic=payload.topic
+        db, brand_id=brand.id, platform=payload.platform, topic=payload.topic
     )
     review = compliance_agent.run_compliance_check(db, version)
+
 
     metadata = version.version_metadata or {}
     return {

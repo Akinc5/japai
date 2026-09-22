@@ -1,3 +1,4 @@
+import uuid
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -5,10 +6,12 @@ load_dotenv()
 from apps.api.core.db import SessionLocal
 from apps.api.models import Brand, KnowledgeChunk, Organization
 
+ORGANIZATION_ID = uuid.UUID("a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d")
 ORGANIZATION_NAME = "JA Assure"
 
 BRANDS = [
     {
+        "id": uuid.UUID("ea083cec-c84d-41c1-b2c3-0efa21c3e874"),
         "slug": "jade",
         "name": "Jade",
         "description": "Jewellers block insurance for Singapore jewellers and goldsmiths.",
@@ -43,6 +46,7 @@ BRANDS = [
         ],
     },
     {
+        "id": uuid.UUID("f0b48a11-8e92-4f16-89d4-1a91e5e227a1"),
         "slug": "jaguar-transit",
         "name": "Jaguar Transit",
         "description": "High-value goods transit insurance for logistics and freight operators.",
@@ -76,6 +80,7 @@ BRANDS = [
         ],
     },
     {
+        "id": uuid.UUID("b2e873f1-4190-4821-bca2-841961e93892"),
         "slug": "doctorshield",
         "name": "DoctorShield",
         "description": "Medical indemnity insurance for doctors and healthcare practitioners in Singapore.",
@@ -114,7 +119,7 @@ BRANDS = [
 def get_or_create_organization(db) -> Organization:
     org = db.query(Organization).filter_by(name=ORGANIZATION_NAME).first()
     if org is None:
-        org = Organization(name=ORGANIZATION_NAME)
+        org = Organization(id=ORGANIZATION_ID, name=ORGANIZATION_NAME)
         db.add(org)
         db.flush()
         print(f"Created organization: {org.name}")
@@ -123,46 +128,51 @@ def get_or_create_organization(db) -> Organization:
     return org
 
 
+def seed_with_session(db) -> None:
+    org = get_or_create_organization(db)
+
+    for brand_data in BRANDS:
+        brand = db.query(Brand).filter((Brand.slug == brand_data["slug"]) | (Brand.id == brand_data["id"])).first()
+        if brand is None:
+            brand = Brand(
+                id=brand_data["id"],
+                organization_id=org.id,
+                slug=brand_data["slug"],
+                name=brand_data["name"],
+                description=brand_data["description"],
+                voice_description=brand_data["voice_description"],
+                tone_guidelines=brand_data["tone_guidelines"],
+                target_audience=brand_data["target_audience"],
+            )
+            db.add(brand)
+            db.flush()
+            print(f"Created brand: {brand.name}")
+        else:
+            print(f"Brand already exists, skipping: {brand.name}")
+
+        existing_chunks = db.query(KnowledgeChunk).filter_by(brand_id=brand.id).count()
+        if existing_chunks == 0:
+            for category, title, content in brand_data["chunks"]:
+                db.add(
+                    KnowledgeChunk(
+                        brand_id=brand.id,
+                        category=category,
+                        title=title,
+                        content=content,
+                    )
+                )
+            print(f"  Inserted {len(brand_data['chunks'])} knowledge chunks for {brand.name}")
+        else:
+            print(f"  Knowledge chunks already exist for {brand.name} ({existing_chunks}), skipping")
+
+    db.commit()
+    print("Seed complete.")
+
+
 def run() -> None:
     db = SessionLocal()
     try:
-        org = get_or_create_organization(db)
-
-        for brand_data in BRANDS:
-            brand = db.query(Brand).filter_by(slug=brand_data["slug"]).first()
-            if brand is None:
-                brand = Brand(
-                    organization_id=org.id,
-                    slug=brand_data["slug"],
-                    name=brand_data["name"],
-                    description=brand_data["description"],
-                    voice_description=brand_data["voice_description"],
-                    tone_guidelines=brand_data["tone_guidelines"],
-                    target_audience=brand_data["target_audience"],
-                )
-                db.add(brand)
-                db.flush()
-                print(f"Created brand: {brand.name}")
-            else:
-                print(f"Brand already exists, skipping: {brand.name}")
-
-            existing_chunks = db.query(KnowledgeChunk).filter_by(brand_id=brand.id).count()
-            if existing_chunks == 0:
-                for category, title, content in brand_data["chunks"]:
-                    db.add(
-                        KnowledgeChunk(
-                            brand_id=brand.id,
-                            category=category,
-                            title=title,
-                            content=content,
-                        )
-                    )
-                print(f"  Inserted {len(brand_data['chunks'])} knowledge chunks for {brand.name}")
-            else:
-                print(f"  Knowledge chunks already exist for {brand.name} ({existing_chunks}), skipping")
-
-        db.commit()
-        print("Seed complete.")
+        seed_with_session(db)
     finally:
         db.close()
 
