@@ -38,6 +38,33 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def on_startup():
+    try:
+        from apps.api.models.base import Base
+        from apps.api.core.db import engine, SessionLocal
+        import apps.api.models
+
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables verified/created successfully.")
+
+        db = SessionLocal()
+        try:
+            from apps.api.models import Brand
+
+            if db.query(Brand).count() == 0:
+                logger.info("Seeding initial brands and knowledge chunks...")
+                from db.seed.seed_brands import run as seed_brands
+
+                seed_brands()
+        finally:
+            db.close()
+    except Exception as e:
+        logger.error("Startup database initialization error: %s", e)
+
+
 app.include_router(health.router, tags=["health"])
 app.include_router(content.router)
 app.include_router(review.router)
