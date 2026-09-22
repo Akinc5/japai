@@ -54,9 +54,13 @@ export default function OptimizationPage() {
     fetch(`${API_BASE_URL}/brands`)
       .then((r) => r.json())
       .then((bs) => {
-        const jade = bs.find((b: any) => b.slug === "jade") ?? bs[0];
-        if (jade) setBrandId(jade.brand_id);
-        else setError("No brands found");
+        if (Array.isArray(bs)) {
+          const jade = bs.find((b: any) => b.slug === "jade") ?? bs[0];
+          if (jade) setBrandId(jade.brand_id);
+          else setError("No brands found");
+        } else {
+          setError("Failed to load brands from API");
+        }
       })
       .catch((e) => setError(e.message));
   }, []);

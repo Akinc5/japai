@@ -134,9 +134,11 @@ export default function DemoPage() {
     fetch(`${API_BASE_URL}/brands`)
       .then((r) => r.json())
       .then((bs) => {
-        setBrands(bs);
-        const jade = bs.find((b: any) => b.slug === "jade") ?? bs[0];
-        if (jade) setBrandId(jade.brand_id);
+        if (Array.isArray(bs)) {
+          setBrands(bs);
+          const jade = bs.find((b: any) => b.slug === "jade") ?? bs[0];
+          if (jade) setBrandId(jade.brand_id);
+        }
       })
       .catch((e) => setError(e.message));
     fetchDemoSuggestions().then((d) => setSuggestions(d.suggestions)).catch(() => {});

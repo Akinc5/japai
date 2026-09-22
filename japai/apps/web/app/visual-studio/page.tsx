@@ -191,7 +191,7 @@ export default function VisualStudioPage() {
               📱 5-Slide Structured Carousel Sequence
             </h3>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
-              {result.creative.carousel_slides.map((slide) => (
+              {(result.creative?.carousel_slides || []).map((slide) => (
                 <div
                   key={slide.slide_number}
                   style={{

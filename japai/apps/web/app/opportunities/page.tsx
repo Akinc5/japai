@@ -45,7 +45,7 @@ function ScoreBreakdown({ o }: { o: Opportunity }) {
       </table>
       <div style={{ color: "#777", marginTop: 4 }}>
         {b.formula}
-        {b.matched_keywords.length > 0 && <> · matched: {b.matched_keywords.join(", ")}</>}
+        {b.matched_keywords && b.matched_keywords.length > 0 && <> · matched: {b.matched_keywords.join(", ")}</>}
       </div>
     </div>
   );

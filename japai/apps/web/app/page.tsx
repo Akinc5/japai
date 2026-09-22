@@ -5,27 +5,27 @@ export default function Home() {
     {
       title: "Compliance Sandbox",
       badge: "LIVE DEMO",
-      desc: "Interactive live testing against the 4-step MAS compliance & underwriter safety gate.",
+      desc: "Test any insurance claim live against our 4-step MAS compliance gate.",
       href: "/demo",
       highlight: true,
     },
     {
       title: "Content Repurposer",
       badge: "REPURPOSE",
-      desc: "Transform insurance whitepapers into LinkedIn posts, carousels, threads & B2B emails.",
+      desc: "Transform whitepapers into LinkedIn posts, carousels, threads & B2B emails.",
       href: "/repurpose",
       highlight: true,
     },
     {
       title: "Lead Discovery (OSM)",
       badge: "LIVE MAP",
-      desc: "Real-time Singapore OpenStreetMap discovery of jewelry shops, clinics & freight hubs.",
+      desc: "Real-time Singapore OpenStreetMap discovery for jewelers, clinics & freight hubs.",
       href: "/leads",
     },
     {
       title: "Visual Studio",
       badge: "CREATIVE",
-      desc: "Midjourney luxury image blueprints and 5-slide educational carousel structures.",
+      desc: "Midjourney luxury visual blueprints and 5-slide educational carousels.",
       href: "/visual-studio",
     },
     {
@@ -37,7 +37,7 @@ export default function Home() {
     {
       title: "Review Queue",
       badge: "AUDIT",
-      desc: "Human-in-the-loop review interface with chunk-level knowledge provenance.",
+      desc: "Human-in-the-loop review queue with full knowledge chunk provenance.",
       href: "/review",
     },
     {
@@ -55,7 +55,7 @@ export default function Home() {
     {
       title: "System Logs",
       badge: "TELEMETRY",
-      desc: "Full audit logs of model latency, token consumption, and daily rate limit guardrails.",
+      desc: "Audit logs of model latency, token consumption, and daily rate limit guardrails.",
       href: "/observability",
     },
   ];
@@ -70,7 +70,7 @@ export default function Home() {
             fontWeight: 700,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: "#00d2ff",
+            color: "#0066cc",
             marginBottom: "0.75rem",
           }}
         >
@@ -79,20 +79,20 @@ export default function Home() {
 
         <h1
           style={{
-            fontSize: "clamp(2rem, 4vw, 3rem)",
+            fontSize: "clamp(2rem, 4vw, 2.75rem)",
             fontWeight: 800,
             letterSpacing: "-0.03em",
             lineHeight: 1.15,
-            color: "#ffffff",
+            color: "#002b49",
             margin: "0 0 0.75rem",
           }}
         >
-          JA Assure<span style={{ color: "#00d2ff" }}>™</span> Marketing OS
+          JA Assure<span style={{ color: "#0066cc" }}>™</span> Marketing OS
         </h1>
 
         <p
           style={{
-            color: "#94a3b8",
+            color: "#475569",
             fontSize: "1.05rem",
             maxWidth: 620,
             margin: "0 auto 1.75rem",
@@ -100,9 +100,9 @@ export default function Home() {
           }}
         >
           Autonomous multi-agent insurance marketing, regulatory compliance &amp; lead intelligence for{" "}
-          <strong style={{ color: "#ffffff" }}>Jade</strong>,{" "}
-          <strong style={{ color: "#ffffff" }}>Jaguar Transit</strong> &amp;{" "}
-          <strong style={{ color: "#ffffff" }}>DoctorShield</strong>.
+          <strong style={{ color: "#002b49" }}>Jade</strong>,{" "}
+          <strong style={{ color: "#002b49" }}>Jaguar Transit</strong> &amp;{" "}
+          <strong style={{ color: "#002b49" }}>DoctorShield</strong>.
         </p>
 
         {/* 3 Verticals Pills */}
@@ -113,9 +113,9 @@ export default function Home() {
               fontWeight: 600,
               padding: "4px 12px",
               borderRadius: "9999px",
-              background: "rgba(16, 185, 129, 0.12)",
-              color: "#34d399",
-              border: "1px solid rgba(16, 185, 129, 0.25)",
+              background: "#ecfdf5",
+              color: "#047857",
+              border: "1px solid #a7f3d0",
             }}
           >
             💎 Jade (Jewellers Block)
@@ -126,9 +126,9 @@ export default function Home() {
               fontWeight: 600,
               padding: "4px 12px",
               borderRadius: "9999px",
-              background: "rgba(245, 158, 11, 0.12)",
-              color: "#fbbf24",
-              border: "1px solid rgba(245, 158, 11, 0.25)",
+              background: "#fffbeb",
+              color: "#b45309",
+              border: "1px solid #fde68a",
             }}
           >
             🚢 Jaguar (High-Value Cargo)
@@ -139,9 +139,9 @@ export default function Home() {
               fontWeight: 600,
               padding: "4px 12px",
               borderRadius: "9999px",
-              background: "rgba(56, 189, 248, 0.12)",
-              color: "#38bdf8",
-              border: "1px solid rgba(56, 189, 248, 0.25)",
+              background: "#eff6ff",
+              color: "#1d4ed8",
+              border: "1px solid #bfdbfe",
             }}
           >
             🩺 DoctorShield (Medical Indemnity)
@@ -149,7 +149,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Clean Cards Grid */}
+      {/* Clean Blue & White Cards Grid */}
       <div
         style={{
           display: "grid",
@@ -164,8 +164,8 @@ export default function Home() {
             className="ja-card"
             style={{
               textDecoration: "none",
-              background: "#0c1c33",
-              border: card.highlight ? "1px solid #00d2ff" : "1px solid #162f52",
+              background: "#ffffff",
+              border: card.highlight ? "1.5px solid #0066cc" : "1px solid #e2e8f0",
               borderRadius: "10px",
               padding: "1.4rem",
               display: "flex",
@@ -187,7 +187,7 @@ export default function Home() {
                     margin: 0,
                     fontSize: "1.05rem",
                     fontWeight: 700,
-                    color: "#ffffff",
+                    color: "#002b49",
                   }}
                 >
                   {card.title}
@@ -196,10 +196,10 @@ export default function Home() {
                   style={{
                     fontSize: "0.65rem",
                     fontWeight: 700,
-                    padding: "2px 7px",
+                    padding: "3px 8px",
                     borderRadius: "4px",
-                    background: card.highlight ? "rgba(0, 210, 255, 0.15)" : "rgba(255, 255, 255, 0.06)",
-                    color: card.highlight ? "#00d2ff" : "#94a3b8",
+                    background: card.highlight ? "#e0f2fe" : "#f1f5f9",
+                    color: card.highlight ? "#0284c7" : "#64748b",
                   }}
                 >
                   {card.badge}
@@ -208,8 +208,8 @@ export default function Home() {
               <p
                 style={{
                   margin: 0,
-                  color: "#94a3b8",
-                  fontSize: "0.85rem",
+                  color: "#64748b",
+                  fontSize: "0.88rem",
                   lineHeight: 1.5,
                 }}
               >
@@ -219,12 +219,12 @@ export default function Home() {
             <div
               style={{
                 marginTop: "1.25rem",
-                fontSize: "0.8rem",
+                fontSize: "0.85rem",
                 fontWeight: 600,
-                color: "#00d2ff",
+                color: "#0066cc",
               }}
             >
-              Open →
+              Open Module →
             </div>
           </Link>
         ))}
@@ -235,10 +235,10 @@ export default function Home() {
         style={{
           marginTop: "3.5rem",
           paddingTop: "1.5rem",
-          borderTop: "1px solid #162f52",
+          borderTop: "1px solid #e2e8f0",
           display: "flex",
           justifyContent: "space-between",
-          color: "#64748b",
+          color: "#94a3b8",
           fontSize: "0.8rem",
           flexWrap: "wrap",
           gap: "0.75rem",

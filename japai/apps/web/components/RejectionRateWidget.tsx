@@ -19,7 +19,7 @@ function BrandRow({ brand }: { brand: BrandRejectionRate }) {
         </span>
       </div>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: maxBar + 40 }}>
-        {brand.buckets.map((b) => {
+        {(brand.buckets || []).map((b) => {
           const height = b.rejection_rate === null ? 0 : b.rejection_rate * maxBar;
           return (
             <div

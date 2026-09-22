@@ -2,23 +2,23 @@ import "./globals.css";
 import Link from "next/link";
 
 export const metadata = {
-  title: "JA Assure™ AI Marketing OS",
-  description: "Autonomous AI Marketing & Compliance Operating System for Jade, Jaguar Transit, and DoctorShield",
+  title: "JA Assure™ — AI Marketing & Compliance OS",
+  description: "Autonomous InsurTech Marketing Platform for Jade, Jaguar Transit, and DoctorShield",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ background: "#f8fafc", color: "#0a192f" }}>
         <header
           style={{
-            background: "rgba(6, 16, 30, 0.9)",
-            backdropFilter: "blur(12px)",
-            borderBottom: "1px solid #162f52",
+            background: "#ffffff",
+            borderBottom: "1px solid #e2e8f0",
             position: "sticky",
             top: 0,
             zIndex: 1000,
             padding: "0.85rem 2rem",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.03)",
           }}
         >
           <div
@@ -37,34 +37,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 textDecoration: "none",
                 display: "flex",
                 alignItems: "center",
-                gap: "0.6rem",
+                gap: "0.65rem",
               }}
             >
               <div
                 style={{
-                  width: 30,
-                  height: 30,
+                  width: 32,
+                  height: 32,
                   borderRadius: "6px",
-                  background: "#00d2ff",
+                  background: "#0066cc",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontWeight: 800,
-                  color: "#06101e",
-                  fontSize: "0.85rem",
+                  color: "#ffffff",
+                  fontSize: "0.9rem",
                 }}
               >
                 JA
               </div>
-              <div
-                style={{
-                  color: "#ffffff",
-                  fontWeight: 800,
-                  fontSize: "1.05rem",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                JA ASSURE<span style={{ color: "#00d2ff" }}>™</span>
+              <div>
+                <div
+                  style={{
+                    color: "#002b49",
+                    fontWeight: 800,
+                    fontSize: "1.1rem",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  JA ASSURE<span style={{ color: "#0066cc" }}>™</span>
+                </div>
               </div>
             </Link>
 
@@ -73,9 +75,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/demo"
                 style={{
-                  color: "#00d2ff",
+                  color: "#0066cc",
                   textDecoration: "none",
-                  fontSize: "0.88rem",
+                  fontSize: "0.9rem",
                   fontWeight: 600,
                 }}
               >
@@ -84,9 +86,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/repurpose"
                 style={{
-                  color: "#94a3b8",
+                  color: "#475569",
                   textDecoration: "none",
-                  fontSize: "0.88rem",
+                  fontSize: "0.9rem",
                   fontWeight: 500,
                 }}
               >
@@ -95,9 +97,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/leads"
                 style={{
-                  color: "#94a3b8",
+                  color: "#475569",
                   textDecoration: "none",
-                  fontSize: "0.88rem",
+                  fontSize: "0.9rem",
                   fontWeight: 500,
                 }}
               >
@@ -106,9 +108,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/visual-studio"
                 style={{
-                  color: "#94a3b8",
+                  color: "#475569",
                   textDecoration: "none",
-                  fontSize: "0.88rem",
+                  fontSize: "0.9rem",
                   fontWeight: 500,
                 }}
               >
@@ -117,9 +119,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/events"
                 style={{
-                  color: "#94a3b8",
+                  color: "#475569",
                   textDecoration: "none",
-                  fontSize: "0.88rem",
+                  fontSize: "0.9rem",
                   fontWeight: 500,
                 }}
               >
@@ -128,9 +130,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/review"
                 style={{
-                  color: "#94a3b8",
+                  color: "#475569",
                   textDecoration: "none",
-                  fontSize: "0.88rem",
+                  fontSize: "0.9rem",
                   fontWeight: 500,
                 }}
               >
@@ -139,9 +141,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link
                 href="/observability"
                 style={{
-                  color: "#94a3b8",
+                  color: "#475569",
                   textDecoration: "none",
-                  fontSize: "0.88rem",
+                  fontSize: "0.9rem",
                   fontWeight: 500,
                 }}
               >

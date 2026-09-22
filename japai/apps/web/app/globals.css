@@ -4,20 +4,20 @@
   --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* JA Assure Signature Colors */
-  --ja-navy-dark: #071527;
-  --ja-navy-surface: #0b1f3a;
-  --ja-cyan: #00d2ff;
-  --ja-blue: #0066cc;
-  --ja-teal: #00c2cb;
+  /* JA Assure Official Blue & White Palette */
+  --bg-primary: #f8fafc;
+  --bg-white: #ffffff;
+  --ja-blue-dark: #002b49;
+  --ja-blue-primary: #0066cc;
+  --ja-blue-light: #e0f2fe;
+  --ja-cyan: #00b4d8;
   
-  --bg-primary: #06101e;
-  --card-bg: #0c1c33;
-  --card-border: #162f52;
-  --card-hover-border: #00d2ff;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --card-hover-border: #0066cc;
   
-  --text-main: #ffffff;
-  --text-muted: #94a3b8;
+  --text-main: #0a192f;
+  --text-muted: #475569;
   --text-dim: #64748b;
 }
 
@@ -31,64 +31,37 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--bg-primary);
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(0, 210, 255, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(0, 102, 204, 0.05) 0%, transparent 40%);
   color: var(--text-main);
   font-family: var(--font-main);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Crisp Clean Card Hover */
+/* Crisp Clean White Card */
 .ja-card {
   transition: all 0.2s ease-in-out;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 43, 73, 0.04);
 }
 .ja-card:hover {
   transform: translateY(-2px);
-  border-color: var(--card-hover-border) !important;
-  box-shadow: 0 8px 24px -6px rgba(0, 210, 255, 0.15);
+  border-color: #0066cc !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 102, 204, 0.12);
 }
 
-/* Custom Scrollbar */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--card-border);
+  background: #cbd5e1;
   border-radius: 3px;
 }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--ja-navy-darkest);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--ja-navy-border);
-  border-radius: 4px;
-}
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--ja-cyan);
-}
-
-/* Card hover animation */
-.ja-card {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.ja-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px -10px rgba(0, 210, 255, 0.18);
-  border-color: rgba(0, 210, 255, 0.4) !important;
-}
-
-/* Glow Badge */
-.ja-badge-glow {
-  box-shadow: 0 0 12px rgba(0, 210, 255, 0.3);
+  background: #0066cc;
 }

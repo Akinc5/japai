@@ -80,7 +80,7 @@ export default function EventsPage() {
         <div style={{ color: "#94a3b8", padding: "2rem", textAlign: "center" }}>Loading industry events...</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-          {events.map((evt) => (
+          {Array.isArray(events) && events.map((evt) => (
             <div
               key={evt.id}
               style={{

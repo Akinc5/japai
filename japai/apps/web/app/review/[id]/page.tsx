@@ -201,7 +201,7 @@ export default function ReviewDetailPage() {
 
       <section style={{ marginTop: 20 }}>
         <h3>Why was this generated? (provenance)</h3>
-        {detail.sources.length === 0 ? (
+        {(!detail.sources || detail.sources.length === 0) ? (
           <p>No source chunks recorded.</p>
         ) : (
           <ul style={{ paddingLeft: 20 }}>
