@@ -73,21 +73,36 @@ def generate(
     observability hook for downstream agents."""
     _ensure_configured()
     started_at = datetime.now(timezone.utc)
-    gen_model = genai.GenerativeModel(model, system_instruction=system)
 
-    try:
-        response = _generate_with_rate_limit_retry(gen_model, prompt, **kwargs)
-        output_text = response.text
-    except Exception as exc:
+    candidate_models = [model, "gemini-3.6-flash", "gemini-flash-latest"]
+    seen = set()
+    candidate_models = [m for m in candidate_models if not (m in seen or seen.add(m))]
+
+    last_exc = None
+    output_text = None
+    used_model = model
+
+    for m in candidate_models:
+        try:
+            gen_model = genai.GenerativeModel(m, system_instruction=system)
+            response = _generate_with_rate_limit_retry(gen_model, prompt, **kwargs)
+            output_text = response.text
+            used_model = m
+            break
+        except Exception as exc:
+            last_exc = exc
+            print(f"[llm_client] Model {m} failed: {exc}, trying fallback...")
+
+    if output_text is None:
         db.add(
             AiRun(
                 agent_name=agent_name,
                 run_type="generation",
                 status="failed",
-                model=model,
+                model=used_model,
                 prompt_version=prompt_version,
                 input_summary=prompt[:500],
-                error_message=str(exc),
+                error_message=str(last_exc),
                 related_entity_type=related_entity_type,
                 related_entity_id=related_entity_id,
                 started_at=started_at,
@@ -95,18 +110,16 @@ def generate(
             )
         )
         db.commit()
-        # Surface as a typed error so endpoints return a clear 503 instead of a
-        # raw provider traceback leaking through as an unhandled 500.
         raise LLMUnavailableError(
-            f"Model call failed ({type(exc).__name__}): {str(exc)[:300]}"
-        ) from exc
+            f"Model call failed ({type(last_exc).__name__}): {str(last_exc)[:300]}"
+        ) from last_exc
 
     db.add(
         AiRun(
             agent_name=agent_name,
             run_type="generation",
             status="succeeded",
-            model=model,
+            model=used_model,
             prompt_version=prompt_version,
             input_summary=prompt[:500],
             output_summary=output_text[:500],
