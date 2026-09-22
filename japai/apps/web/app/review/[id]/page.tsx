@@ -97,9 +97,39 @@ export default function ReviewDetailPage() {
 
   if (error && !detail) {
     return (
-      <main style={{ padding: "2.5rem 1.5rem", maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ color: "#b91c1c", background: "#fef2f2", padding: "14px", borderRadius: 8, border: "1px solid #fecaca" }}>
-          Error: {error}
+      <main style={{ padding: "3rem 1.5rem", maxWidth: 640, margin: "0 auto" }}>
+        <div
+          style={{
+            background: "#ffffff",
+            padding: "2.5rem 2rem",
+            borderRadius: 12,
+            border: "1px solid #e2e8f0",
+            textAlign: "center",
+            boxShadow: "0 1px 4px rgba(0, 43, 73, 0.04)",
+          }}
+        >
+          <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>🛡️</div>
+          <h2 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "0 0 8px", color: "#002b49" }}>
+            Review Item Not Found
+          </h2>
+          <p style={{ color: "#64748b", margin: "0 0 1.75rem", fontSize: "0.95rem", lineHeight: 1.5 }}>
+            This content version may have already been approved or processed, or does not exist in the active review queue.
+          </p>
+          <Link
+            href="/review"
+            style={{
+              display: "inline-block",
+              background: "#0066cc",
+              color: "#ffffff",
+              padding: "10px 22px",
+              borderRadius: "6px",
+              textDecoration: "none",
+              fontWeight: 700,
+              fontSize: "0.9rem",
+            }}
+          >
+            ← Return to Compliance Queue
+          </Link>
         </div>
       </main>
     );

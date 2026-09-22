@@ -11,9 +11,9 @@ export interface BrandSummary {
 }
 
 export const FALLBACK_BRANDS: BrandSummary[] = [
-  { brand_id: "jade-default", slug: "jade", name: "Jade (Jewellers Block)" },
-  { brand_id: "jaguar-default", slug: "jaguar-transit", name: "Jaguar Transit" },
-  { brand_id: "doctorshield-default", slug: "doctorshield", name: "DoctorShield" },
+  { brand_id: "ea083cec-c84d-41c1-b2c3-0efa21c3e874", slug: "jade", name: "Jade (Jewellers Block)" },
+  { brand_id: "f0b48a11-8e92-4f16-89d4-1a91e5e227a1", slug: "jaguar-transit", name: "Jaguar Transit" },
+  { brand_id: "b2e873f1-4190-4821-bca2-841961e93892", slug: "doctorshield", name: "DoctorShield" },
 ];
 
 export async function fetchBrands(): Promise<BrandSummary[]> {
@@ -439,7 +439,8 @@ export async function fetchFallbackExamples(): Promise<{ count: number; examples
 export async function runDemo(body: {
   brand_id: string;
   language: string;
-  claim_or_topic: string;
+  claim_or_topic?: string;
+  text?: string;
   mode?: string;
 }): Promise<DemoRunResponse> {
   let session = "anon";
@@ -452,10 +453,16 @@ export async function runDemo(body: {
   } catch {
     session = "anon";
   }
+  const payload = {
+    brand_id: body.brand_id,
+    language: body.language || "en",
+    claim_or_topic: body.claim_or_topic || body.text || "",
+    mode: body.mode || "generate",
+  };
   const res = await fetch(`${API_BASE_URL}/demo/run`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-demo-session": session },
-    body: JSON.stringify(body),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) {
     const detail = await res.json().catch(() => ({}));
