@@ -12,8 +12,8 @@ from apps.api.core.config import settings
 from apps.api.models.ai_run import AiRun
 
 _configured = False
-_MAX_RATE_LIMIT_RETRIES = 5
-_DEFAULT_RETRY_DELAY_SECONDS = 15
+_MAX_RATE_LIMIT_RETRIES = 1
+_DEFAULT_RETRY_DELAY_SECONDS = 3
 _RETRY_DELAY_PATTERN = re.compile(r"retry in (\d+(?:\.\d+)?)s")
 
 
@@ -41,18 +41,19 @@ def _ensure_configured() -> None:
 
 
 def _generate_with_rate_limit_retry(gen_model, prompt: str, **kwargs):
-    """Free-tier Gemini quotas are a handful of requests/minute. Retry on
-    429 ResourceExhausted using the delay Google's own error suggests,
-    rather than surfacing a spurious failure under normal pipeline use."""
+    """Attempt generation with rapid retry for transient rate limits,
+    failing fast to allow model fallback if daily per-model limits are hit."""
     for attempt in range(_MAX_RATE_LIMIT_RETRIES + 1):
         try:
             return gen_model.generate_content(prompt, **kwargs)
         except ResourceExhausted as exc:
-            if attempt == _MAX_RATE_LIMIT_RETRIES:
+            err_str = str(exc)
+            # If daily project quota is exceeded, don't sleep — immediately let next model try
+            if "GenerateRequestsPerDay" in err_str or attempt == _MAX_RATE_LIMIT_RETRIES:
                 raise
-            match = _RETRY_DELAY_PATTERN.search(str(exc))
-            delay = float(match.group(1)) + 1 if match else _DEFAULT_RETRY_DELAY_SECONDS
-            print(f"[llm_client] Rate limited (attempt {attempt + 1}), retrying in {delay:.0f}s...")
+            match = _RETRY_DELAY_PATTERN.search(err_str)
+            delay = min(float(match.group(1)) if match else _DEFAULT_RETRY_DELAY_SECONDS, 5.0)
+            print(f"[llm_client] Rate limited, quick pause {delay:.1f}s before retry...")
             time.sleep(delay)
 
 
@@ -74,7 +75,14 @@ def generate(
     _ensure_configured()
     started_at = datetime.now(timezone.utc)
 
-    candidate_models = [model, "gemini-3.6-flash", "gemini-flash-latest"]
+    candidate_models = [
+        model,
+        "gemini-2.5-flash",
+        "gemini-1.5-flash",
+        "gemini-2.0-flash",
+        "gemini-flash-latest",
+        "gemini-3.6-flash",
+    ]
     seen = set()
     candidate_models = [m for m in candidate_models if not (m in seen or seen.add(m))]
 
@@ -91,7 +99,8 @@ def generate(
             break
         except Exception as exc:
             last_exc = exc
-            print(f"[llm_client] Model {m} failed: {exc}, trying fallback...")
+            print(f"[llm_client] Model {m} failed: {str(exc)[:120]}, trying next model...")
+
 
     if output_text is None:
         db.add(
