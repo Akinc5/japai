@@ -11,7 +11,10 @@ from sqlalchemy.orm import Session
 from apps.api.core.config import settings
 from apps.api.models.ai_run import AiRun
 
-_configured = False
+import os
+from dotenv import load_dotenv
+
+_last_api_key = None
 _MAX_RATE_LIMIT_RETRIES = 1
 _DEFAULT_RETRY_DELAY_SECONDS = 3
 _RETRY_DELAY_PATTERN = re.compile(r"retry in (\d+(?:\.\d+)?)s")
@@ -30,14 +33,17 @@ class LLMResponseError(LLMError):
 
 
 def _ensure_configured() -> None:
-    global _configured
-    if not _configured:
-        if not settings.GEMINI_API_KEY:
-            raise LLMUnavailableError(
-                "GEMINI_API_KEY is not set — add it to .env and restart the api container."
-            )
-        genai.configure(api_key=settings.GEMINI_API_KEY)
-        _configured = True
+    global _last_api_key
+    load_dotenv(override=True)
+    current_key = os.getenv("GEMINI_API_KEY") or settings.GEMINI_API_KEY
+    if not current_key:
+        raise LLMUnavailableError(
+            "GEMINI_API_KEY is not set — add it to .env and restart the api container."
+        )
+    if current_key != _last_api_key:
+        genai.configure(api_key=current_key)
+        _last_api_key = current_key
+
 
 
 def _generate_with_rate_limit_retry(gen_model, prompt: str, **kwargs):
