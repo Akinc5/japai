@@ -15,7 +15,7 @@ Nothing here invents a verdict the pipeline did not actually produce.
 """
 import json
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -27,6 +27,7 @@ from apps.api.agents import content as content_agent
 from apps.api.agents import localization as localization_agent
 from apps.api.agents.compliance import RISK_LEVEL_BY_OUTCOME
 from apps.api.core import demo_guards
+from apps.api.core.brand_utils import get_or_resolve_brand
 from apps.api.core.db import get_db
 from apps.api.models import Brand, ComplianceReview, ContentAsset, ContentVersion
 
@@ -38,7 +39,7 @@ SUPPORTED_LANGUAGES = list(localization_agent.LANGUAGES.keys())
 
 
 class DemoRunRequest(BaseModel):
-    brand_id: UUID
+    brand_id: Union[str, UUID]
     language: str = Field(default="en")
     claim_or_topic: str = Field(default="")
     # "generate" (default): write new copy about the topic, then check it.
@@ -400,7 +401,7 @@ def run_demo(payload: DemoRunRequest, request: Request, db: Session = Depends(ge
             detail=f"Unsupported language. Supported: {SUPPORTED_LANGUAGES}",
         )
 
-    brand = db.get(Brand, payload.brand_id)
+    brand = get_or_resolve_brand(db, payload.brand_id)
     if brand is None:
         raise HTTPException(status_code=404, detail="Brand not found")
 

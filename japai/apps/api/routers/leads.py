@@ -1,3 +1,4 @@
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -5,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from apps.api.agents import lead as lead_agent
 from apps.api.agents.compliance import RISK_LEVEL_BY_OUTCOME
+from apps.api.core.brand_utils import get_or_resolve_brand
 from apps.api.core.db import get_db
 from apps.api.models import Brand, ComplianceReview, ContentVersion, Lead
 
@@ -16,15 +18,7 @@ DEMO_SOURCES = ("seed_data", "web_search")
 
 
 def _outreach_state(db: Session, lead: Lead) -> dict | None:
-    """Where this lead's outreach draft currently sits in the review flow.
-
-    The lead's FK points at the version the agent *drafted*. A reviewer's edit
-    supersedes that row (is_current=False) and creates a new approved version,
-    so reading the linked row directly would report a stale
-    'submitted_for_review' forever and link to a version no longer in the queue.
-    Resolve to the asset's current version instead, and keep the original id
-    visible as `drafted_content_version_id` so the provenance isn't lost.
-    """
+    """Where this lead's outreach draft currently sits in the review flow."""
     if lead.outreach_content_version_id is None:
         return None
     drafted = db.get(ContentVersion, lead.outreach_content_version_id)
@@ -80,18 +74,19 @@ def _serialize(db: Session, lead: Lead) -> dict:
 
 @router.post("/generate")
 def generate(
-    brand_id: UUID = Query(..., description="Brand to source and score leads for"),
+    brand_id: Optional[str] = Query(None, description="Brand to source and score leads for"),
     draft_outreach: bool = Query(True, description="Also draft outreach for the top leads"),
     max_outreach: int = Query(3, ge=0, le=8, description="Cap on LLM calls (one per draft)"),
     db: Session = Depends(get_db),
 ):
     """Sources a synthetic prospect list, scores it deterministically, then spends
     one LLM call per drafted lead. Set draft_outreach=false for a zero-cost run."""
-    if db.get(Brand, brand_id) is None:
+    brand = get_or_resolve_brand(db, brand_id)
+    if brand is None:
         raise HTTPException(status_code=404, detail="Brand not found")
 
     result = lead_agent.generate_leads(
-        db, brand_id, draft_outreach=draft_outreach, max_outreach=max_outreach
+        db, brand.id, draft_outreach=draft_outreach, max_outreach=max_outreach
     )
     result["formula"] = lead_agent.SCORE_FORMULA
     result["scope_note"] = (
@@ -103,20 +98,21 @@ def generate(
 
 @router.get("")
 def list_leads(
-    brand_id: UUID = Query(..., description="Brand to list leads for"),
+    brand_id: Optional[str] = Query(None, description="Brand to list leads for"),
     db: Session = Depends(get_db),
 ):
-    if db.get(Brand, brand_id) is None:
+    brand = get_or_resolve_brand(db, brand_id)
+    if brand is None:
         raise HTTPException(status_code=404, detail="Brand not found")
 
     rows = (
         db.query(Lead)
-        .filter(Lead.brand_id == brand_id, Lead.source.in_(DEMO_SOURCES))
+        .filter(Lead.brand_id == brand.id, Lead.source.in_(DEMO_SOURCES))
         .order_by(Lead.score.desc().nullslast())
         .all()
     )
     return {
-        "brand_id": brand_id,
+        "brand_id": str(brand.id),
         "formula": lead_agent.SCORE_FORMULA,
         "count": len(rows),
         "leads": [_serialize(db, lead) for lead in rows],

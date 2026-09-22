@@ -1,9 +1,11 @@
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from apps.api.agents import opportunity as opportunity_agent
+from apps.api.core.brand_utils import get_or_resolve_brand
 from apps.api.core.db import get_db
 from apps.api.models import Brand, ContentOpportunity
 
@@ -29,19 +31,23 @@ def _serialize(opportunity: ContentOpportunity) -> dict:
 
 @router.post("/generate")
 def generate(
-    brand_id: UUID = Query(..., description="Brand to generate opportunities for"),
+    brand_id: Optional[str] = Query(None, description="Brand to generate opportunities for"),
     limit: int = Query(3, ge=1, le=5, description="Max opportunities to write narratives for"),
     db: Session = Depends(get_db),
 ):
     """Scores every topic cluster deterministically, then spends one LLM call per
     candidate clearing the minimum score — not one per candidate overall."""
+    brand = get_or_resolve_brand(db, brand_id)
+    if brand is None:
+        raise HTTPException(status_code=404, detail="Brand not found")
+
     try:
-        created = opportunity_agent.generate_opportunities(db, brand_id, limit=limit)
+        created = opportunity_agent.generate_opportunities(db, brand.id, limit=limit)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
     return {
-        "brand_id": brand_id,
+        "brand_id": str(brand.id),
         "min_score": opportunity_agent.MIN_SCORE,
         "formula": opportunity_agent.SCORE_FORMULA,
         "generated": [_serialize(o) for o in created],
@@ -50,17 +56,21 @@ def generate(
 
 @router.get("")
 def list_opportunities(
-    brand_id: UUID = Query(..., description="Brand to list opportunities for"),
+    brand_id: Optional[str] = Query(None, description="Brand to list opportunities for"),
     status: str = Query("suggested", description="Filter by status"),
     db: Session = Depends(get_db),
 ):
-    if db.get(Brand, brand_id) is None:
+    brand = get_or_resolve_brand(db, brand_id)
+    if brand is None:
         raise HTTPException(status_code=404, detail="Brand not found")
 
     rows = (
         db.query(ContentOpportunity)
-        .filter(ContentOpportunity.brand_id == brand_id, ContentOpportunity.status == status)
-        .order_by(ContentOpportunity.priority_score.desc())
+        .filter(
+            ContentOpportunity.brand_id == brand.id,
+            ContentOpportunity.status == status,
+        )
+        .order_by(ContentOpportunity.priority_score.desc().nullslast())
         .all()
     )
     return [_serialize(o) for o in rows]
