@@ -1,10 +1,9 @@
 import uuid
 
 from sqlalchemy import CheckConstraint, ForeignKey, Index, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class ContentAsset(Base, UUIDPKMixin, TimestampMixin):
@@ -30,10 +29,10 @@ class ContentAsset(Base, UUIDPKMixin, TimestampMixin):
     )
 
     campaign_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("campaigns.id", ondelete="CASCADE"), nullable=False
+        GUID, ForeignKey("campaigns.id", ondelete="CASCADE"), nullable=False
     )
     brand_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("brands.id", ondelete="CASCADE"), nullable=False
+        GUID, ForeignKey("brands.id", ondelete="CASCADE"), nullable=False
     )
     asset_type: Mapped[str] = mapped_column(Text, nullable=False)
     platform: Mapped[str | None] = mapped_column(Text)
@@ -46,9 +45,10 @@ class ContentAsset(Base, UUIDPKMixin, TimestampMixin):
     language: Mapped[str] = mapped_column(Text, nullable=False, server_default="en")
     # Points at the English asset this was localized from (NULL for originals).
     source_content_asset_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_assets.id", ondelete="SET NULL")
+        GUID, ForeignKey("content_assets.id", ondelete="SET NULL")
     )
 
     campaign = relationship("Campaign")
     brand = relationship("Brand")
     versions = relationship("ContentVersion", back_populates="content_asset", cascade="all, delete-orphan")
+

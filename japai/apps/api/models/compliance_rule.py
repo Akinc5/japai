@@ -1,10 +1,9 @@
 import uuid
 
 from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class ComplianceRule(Base, UUIDPKMixin, TimestampMixin):
@@ -21,7 +20,7 @@ class ComplianceRule(Base, UUIDPKMixin, TimestampMixin):
     )
 
     brand_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("brands.id", ondelete="CASCADE")
+        GUID, ForeignKey("brands.id", ondelete="CASCADE")
     )
     rule_code: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
     description: Mapped[str] = mapped_column(Text, nullable=False)
@@ -30,3 +29,4 @@ class ComplianceRule(Base, UUIDPKMixin, TimestampMixin):
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="true")
 
     brand = relationship("Brand")
+

@@ -1,10 +1,9 @@
 import uuid
 
 from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Integer, Text, UniqueConstraint, JSON
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class ContentVersion(Base, UUIDPKMixin, TimestampMixin):
@@ -18,7 +17,7 @@ class ContentVersion(Base, UUIDPKMixin, TimestampMixin):
     )
 
     content_asset_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_assets.id", ondelete="CASCADE"), nullable=False
+        GUID, ForeignKey("content_assets.id", ondelete="CASCADE"), nullable=False
     )
     version_number: Mapped[int] = mapped_column(Integer, nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
@@ -28,3 +27,4 @@ class ContentVersion(Base, UUIDPKMixin, TimestampMixin):
     is_current: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     content_asset = relationship("ContentAsset", back_populates="versions")
+

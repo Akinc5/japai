@@ -2,10 +2,9 @@ import uuid
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import CheckConstraint, ForeignKey, Index, Text, JSON
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class KnowledgeChunk(Base, UUIDPKMixin, TimestampMixin):
@@ -21,10 +20,10 @@ class KnowledgeChunk(Base, UUIDPKMixin, TimestampMixin):
     )
 
     brand_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("brands.id", ondelete="CASCADE"), nullable=False
+        GUID, ForeignKey("brands.id", ondelete="CASCADE"), nullable=False
     )
     product_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("products.id", ondelete="SET NULL")
+        GUID, ForeignKey("products.id", ondelete="SET NULL")
     )
     category: Mapped[str] = mapped_column(Text, nullable=False)
     title: Mapped[str | None] = mapped_column(Text)
@@ -33,3 +32,4 @@ class KnowledgeChunk(Base, UUIDPKMixin, TimestampMixin):
     source: Mapped[str | None] = mapped_column(Text)
 
     brand = relationship("Brand", back_populates="knowledge_chunks")
+

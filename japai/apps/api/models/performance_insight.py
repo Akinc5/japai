@@ -1,23 +1,22 @@
 import uuid
 
 from sqlalchemy import ForeignKey, Text, JSON
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class PerformanceInsight(Base, UUIDPKMixin, TimestampMixin):
     __tablename__ = "performance_insights"
 
     campaign_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("campaigns.id", ondelete="CASCADE")
+        GUID, ForeignKey("campaigns.id", ondelete="CASCADE")
     )
     content_asset_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_assets.id", ondelete="CASCADE")
+        GUID, ForeignKey("content_assets.id", ondelete="CASCADE")
     )
     brand_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("brands.id", ondelete="CASCADE")
+        GUID, ForeignKey("brands.id", ondelete="CASCADE")
     )
     insight_text: Mapped[str] = mapped_column(Text, nullable=False)
     insight_type: Mapped[str | None] = mapped_column(Text)
@@ -29,3 +28,4 @@ class PerformanceInsight(Base, UUIDPKMixin, TimestampMixin):
     campaign = relationship("Campaign")
     content_asset = relationship("ContentAsset")
     brand = relationship("Brand")
+

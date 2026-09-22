@@ -2,10 +2,9 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import CheckConstraint, DateTime, Index, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class AiRun(Base, UUIDPKMixin, TimestampMixin):
@@ -27,6 +26,7 @@ class AiRun(Base, UUIDPKMixin, TimestampMixin):
     output_summary: Mapped[str | None] = mapped_column(Text)
     error_message: Mapped[str | None] = mapped_column(Text)
     related_entity_type: Mapped[str | None] = mapped_column(Text)
-    related_entity_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
+    related_entity_id: Mapped[uuid.UUID | None] = mapped_column(GUID)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+

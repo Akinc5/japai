@@ -1,10 +1,9 @@
 import uuid
 
 from sqlalchemy import CheckConstraint, ForeignKey, Index, Integer, Numeric, Text, JSON
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class Lead(Base, UUIDPKMixin, TimestampMixin):
@@ -18,7 +17,7 @@ class Lead(Base, UUIDPKMixin, TimestampMixin):
     )
 
     brand_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("brands.id", ondelete="SET NULL")
+        GUID, ForeignKey("brands.id", ondelete="SET NULL")
     )
     company_name: Mapped[str | None] = mapped_column(Text)
     contact_name: Mapped[str | None] = mapped_column(Text)
@@ -33,10 +32,11 @@ class Lead(Base, UUIDPKMixin, TimestampMixin):
     employee_count: Mapped[int | None] = mapped_column(Integer)
     score_breakdown: Mapped[dict | None] = mapped_column(JSON)
     outreach_content_version_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_versions.id", ondelete="SET NULL")
+        GUID, ForeignKey("content_versions.id", ondelete="SET NULL")
     )
 
     brand = relationship("Brand")
     outreach_version = relationship("ContentVersion")
     signals = relationship("LeadSignal", back_populates="lead", cascade="all, delete-orphan")
     activities = relationship("LeadActivity", back_populates="lead", cascade="all, delete-orphan")
+

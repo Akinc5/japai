@@ -2,10 +2,9 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class PublishingJob(Base, UUIDPKMixin, TimestampMixin):
@@ -18,10 +17,10 @@ class PublishingJob(Base, UUIDPKMixin, TimestampMixin):
     )
 
     content_asset_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_assets.id", ondelete="CASCADE"), nullable=False
+        GUID, ForeignKey("content_assets.id", ondelete="CASCADE"), nullable=False
     )
     content_version_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_versions.id", ondelete="CASCADE"), nullable=False
+        GUID, ForeignKey("content_versions.id", ondelete="CASCADE"), nullable=False
     )
     platform: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[str] = mapped_column(Text, nullable=False, server_default="pending")
@@ -32,3 +31,4 @@ class PublishingJob(Base, UUIDPKMixin, TimestampMixin):
 
     content_asset = relationship("ContentAsset")
     content_version = relationship("ContentVersion")
+

@@ -2,20 +2,19 @@ import uuid
 from datetime import datetime
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Numeric, Text, func
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class Analytics(Base, UUIDPKMixin, TimestampMixin):
     __tablename__ = "analytics"
 
     content_asset_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_assets.id", ondelete="CASCADE")
+        GUID, ForeignKey("content_assets.id", ondelete="CASCADE")
     )
     campaign_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("campaigns.id", ondelete="CASCADE")
+        GUID, ForeignKey("campaigns.id", ondelete="CASCADE")
     )
     metric_name: Mapped[str] = mapped_column(Text, nullable=False)
     metric_value: Mapped[float] = mapped_column(Numeric, nullable=False)
@@ -25,3 +24,4 @@ class Analytics(Base, UUIDPKMixin, TimestampMixin):
 
     content_asset = relationship("ContentAsset")
     campaign = relationship("Campaign")
+

@@ -1,10 +1,9 @@
 import uuid
 
 from sqlalchemy import CheckConstraint, ForeignKey, Numeric, Text, JSON
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class ContentOpportunity(Base, UUIDPKMixin, TimestampMixin):
@@ -18,7 +17,7 @@ class ContentOpportunity(Base, UUIDPKMixin, TimestampMixin):
     )
 
     brand_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("brands.id", ondelete="CASCADE"), nullable=False
+        GUID, ForeignKey("brands.id", ondelete="CASCADE"), nullable=False
     )
     title: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
@@ -32,3 +31,4 @@ class ContentOpportunity(Base, UUIDPKMixin, TimestampMixin):
     status: Mapped[str] = mapped_column(Text, nullable=False, default="new")
 
     brand = relationship("Brand")
+

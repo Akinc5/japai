@@ -1,10 +1,9 @@
 import uuid
 
 from sqlalchemy import CheckConstraint, ForeignKey, Text
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
+from apps.api.models.base import Base, GUID, UUIDPKMixin, TimestampMixin
 
 
 class Feedback(Base, UUIDPKMixin, TimestampMixin):
@@ -21,13 +20,13 @@ class Feedback(Base, UUIDPKMixin, TimestampMixin):
     )
 
     content_asset_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_assets.id", ondelete="CASCADE")
+        GUID, ForeignKey("content_assets.id", ondelete="CASCADE")
     )
     content_version_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("content_versions.id", ondelete="SET NULL")
+        GUID, ForeignKey("content_versions.id", ondelete="SET NULL")
     )
     campaign_id: Mapped[uuid.UUID | None] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("campaigns.id", ondelete="CASCADE")
+        GUID, ForeignKey("campaigns.id", ondelete="CASCADE")
     )
     source: Mapped[str] = mapped_column(Text, nullable=False)
     feedback_text: Mapped[str] = mapped_column(Text, nullable=False)
@@ -38,3 +37,4 @@ class Feedback(Base, UUIDPKMixin, TimestampMixin):
     content_asset = relationship("ContentAsset")
     content_version = relationship("ContentVersion")
     campaign = relationship("Campaign")
+
