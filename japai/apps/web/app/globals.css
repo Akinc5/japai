@@ -1,12 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 :root {
-  color-scheme: light dark;
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Official JA Assure Palette */
+  --ja-navy-darkest: #040d1a;
+  --ja-navy-bg: #071527;
+  --ja-navy-surface: #0b1f3a;
+  --ja-navy-card: #0f2747;
+  --ja-navy-border: #1a3860;
+  --ja-navy-hover: #16365f;
+
+  /* Brand Accents */
+  --ja-cyan: #00d2ff;
+  --ja-blue: #0070f3;
+  --ja-teal: #00c2cb;
+  --ja-jade: #10b981;
+  --ja-jaguar-gold: #f59e0b;
+  --ja-doc-blue: #38bdf8;
+  
+  /* Text Tokens */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
 }
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  padding: 0;
+  background-color: var(--ja-navy-darkest);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(0, 210, 255, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 112, 243, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(7, 21, 39, 1) 0px, rgba(4, 13, 26, 1) 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ja-navy-darkest);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ja-navy-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ja-cyan);
+}
+
+/* Card hover animation */
+.ja-card {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ja-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -10px rgba(0, 210, 255, 0.18);
+  border-color: rgba(0, 210, 255, 0.4) !important;
+}
+
+/* Glow Badge */
+.ja-badge-glow {
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.3);
 }
