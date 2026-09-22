@@ -3,6 +3,7 @@ from typing import Optional, Union
 from sqlalchemy.orm import Session
 from apps.api.models import Brand
 
+
 def get_or_resolve_brand(db: Session, brand_identifier: Optional[Union[str, UUID]] = None) -> Optional[Brand]:
     """Safely resolves a brand by UUID, slug, or falls back to the primary brand."""
     brand = None
@@ -14,7 +15,7 @@ def get_or_resolve_brand(db: Session, brand_identifier: Optional[Union[str, UUID
             pass
         # Try slug lookup
         if brand is None:
-            brand = db.query(Brand).filter(Brand.slug == str(brand_identifier)).first()
+            brand = db.query(Brand).filter(Brand.slug == str(brand_identifier).lower().strip()).first()
         # Try partial name match
         if brand is None:
             brand = db.query(Brand).filter(Brand.name.ilike(f"%{brand_identifier}%")).first()
@@ -27,8 +28,12 @@ def get_or_resolve_brand(db: Session, brand_identifier: Optional[Union[str, UUID
     if brand is None:
         try:
             from db.seed.seed_brands import run as run_seed
+
             run_seed()
-            brand = db.query(Brand).first()
+            if brand_identifier:
+                brand = db.query(Brand).filter(Brand.slug == str(brand_identifier).lower().strip()).first()
+            if brand is None:
+                brand = db.query(Brand).first()
         except Exception as e:
             print(f"Auto-seeding brands failed: {e}")
 

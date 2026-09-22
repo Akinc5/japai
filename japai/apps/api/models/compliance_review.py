@@ -1,8 +1,8 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Text, func, text
-from sqlalchemy.dialects.postgresql import JSONB, UUID
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Text, func, JSON
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from apps.api.models.base import Base, UUIDPKMixin, TimestampMixin
@@ -27,12 +27,12 @@ class ComplianceReview(Base, UUIDPKMixin, TimestampMixin):
     compliance_rule_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True), ForeignKey("compliance_rules.id", ondelete="SET NULL")
     )
-    reviewer_type: Mapped[str] = mapped_column(Text, nullable=False, server_default="ai_agent")
+    reviewer_type: Mapped[str] = mapped_column(Text, nullable=False, default="ai_agent")
     reviewer_name: Mapped[str | None] = mapped_column(Text)
     outcome: Mapped[str] = mapped_column(Text, nullable=False)
-    detected_issues: Mapped[list | None] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
+    detected_issues: Mapped[list | None] = mapped_column(JSON, default=list)
     notes: Mapped[str | None] = mapped_column(Text)
-    reviewed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    reviewed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
 
     content_version = relationship("ContentVersion")
     compliance_rule = relationship("ComplianceRule")

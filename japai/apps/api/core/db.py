@@ -50,7 +50,17 @@ def _build_engine():
     # If all remote database connections fail, fall back to SQLite
     logger.error("All PostgreSQL connections failed. Falling back to SQLite.")
     sqlite_url = "sqlite:///./ja_assure.db"
-    return create_engine(sqlite_url, connect_args={"check_same_thread": False})
+    eng = create_engine(sqlite_url, connect_args={"check_same_thread": False})
+    try:
+        from apps.api.models.base import Base
+        import apps.api.models
+
+        Base.metadata.create_all(bind=eng)
+        logger.info("SQLite schema initialized successfully.")
+    except Exception as e:
+        logger.warning("SQLite initialization note: %s", e)
+
+    return eng
 
 
 engine = _build_engine()

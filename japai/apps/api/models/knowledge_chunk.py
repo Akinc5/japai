@@ -1,7 +1,7 @@
 import uuid
 
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import CheckConstraint, ForeignKey, Index, Text
+from sqlalchemy import CheckConstraint, ForeignKey, Index, Text, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -29,7 +29,7 @@ class KnowledgeChunk(Base, UUIDPKMixin, TimestampMixin):
     category: Mapped[str] = mapped_column(Text, nullable=False)
     title: Mapped[str | None] = mapped_column(Text)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    embedding: Mapped[list[float] | None] = mapped_column(Vector(768))
+    embedding: Mapped[list[float] | None] = mapped_column(Vector(768).with_variant(JSON, "sqlite"))
     source: Mapped[str | None] = mapped_column(Text)
 
     brand = relationship("Brand", back_populates="knowledge_chunks")
