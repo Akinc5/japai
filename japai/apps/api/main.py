@@ -31,6 +31,8 @@ from apps.api.routers import (
     visual,
 )
 
+import re
+
 app = FastAPI(title="JAPAI - AI Marketing OS", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
@@ -38,6 +40,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def normalize_path_middleware(request: Request, call_next):
+    path = request.scope.get("path", "")
+    if "//" in path:
+        request.scope["path"] = re.sub(r"/+", "/", path)
+    return await call_next(request)
+
 
 
 @app.on_event("startup")
