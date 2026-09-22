@@ -46,11 +46,25 @@ def _ensure_configured() -> None:
 
 
 
+_last_call_timestamp = 0.0
+_MIN_CALL_SPACING_SECONDS = 1.2  # Prevents bursting beyond provider RPM limits
+
+
+def _pace_outgoing_call():
+    global _last_call_timestamp
+    now = time.time()
+    elapsed = now - _last_call_timestamp
+    if elapsed < _MIN_CALL_SPACING_SECONDS:
+        time.sleep(_MIN_CALL_SPACING_SECONDS - elapsed)
+    _last_call_timestamp = time.time()
+
+
 def _generate_with_rate_limit_retry(gen_model, prompt: str, **kwargs):
     """Attempt generation with rapid retry for transient rate limits,
     failing fast to allow model fallback if daily per-model limits are hit."""
     for attempt in range(_MAX_RATE_LIMIT_RETRIES + 1):
         try:
+            _pace_outgoing_call()
             return gen_model.generate_content(prompt, **kwargs)
         except ResourceExhausted as exc:
             err_str = str(exc)
@@ -61,6 +75,7 @@ def _generate_with_rate_limit_retry(gen_model, prompt: str, **kwargs):
             delay = min(float(match.group(1)) if match else _DEFAULT_RETRY_DELAY_SECONDS, 5.0)
             print(f"[llm_client] Rate limited, quick pause {delay:.1f}s before retry...")
             time.sleep(delay)
+
 
 
 def generate(

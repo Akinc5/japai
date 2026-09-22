@@ -32,6 +32,8 @@ from apps.api.routers import (
 )
 
 import re
+import time
+from collections import defaultdict
 
 app = FastAPI(title="JAPAI - AI Marketing OS", version="1.0.0")
 app.add_middleware(
@@ -41,13 +43,46 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+_IP_REQUESTS = defaultdict(list)
+_GENERATIVE_PATHS = {"/content/generate", "/demo/run", "/repurpose/generate", "/visual/generate", "/optimization/analyze"}
+_MAX_GENERATIVE_PER_MINUTE = 15
+_MAX_GENERAL_PER_MINUTE = 60
+
 
 @app.middleware("http")
-async def normalize_path_middleware(request: Request, call_next):
+async def rate_limit_and_path_middleware(request: Request, call_next):
+    # 1. Normalize multiple slashes in path
     path = request.scope.get("path", "")
     if "//" in path:
-        request.scope["path"] = re.sub(r"/+", "/", path)
+        path = re.sub(r"/+", "/", path)
+        request.scope["path"] = path
+
+    # 2. Rate limit protection for non-stop spamming
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    now = time.time()
+    
+    # Filter timestamps older than 60s
+    recent_all = [t for t in _IP_REQUESTS[client_ip] if now - t < 60]
+    _IP_REQUESTS[client_ip] = recent_all
+
+    is_gen = any(p in path for p in _GENERATIVE_PATHS)
+    limit = _MAX_GENERATIVE_PER_MINUTE if is_gen else _MAX_GENERAL_PER_MINUTE
+
+    if len(recent_all) >= limit:
+        retry_after = int(60 - (now - recent_all[0])) + 1
+        return JSONResponse(
+            status_code=429,
+            content={
+                "error": "rate_limited",
+                "detail": f"Rate limit reached ({limit} reqs/min). Please wait {retry_after}s.",
+                "retry_after_seconds": max(retry_after, 1),
+            },
+            headers={"Retry-After": str(max(retry_after, 1))},
+        )
+
+    _IP_REQUESTS[client_ip].append(now)
     return await call_next(request)
+
 
 
 
