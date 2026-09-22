@@ -1,29 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
   --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Official JA Assure Palette */
-  --ja-navy-darkest: #040d1a;
-  --ja-navy-bg: #071527;
+  /* JA Assure Signature Colors */
+  --ja-navy-dark: #071527;
   --ja-navy-surface: #0b1f3a;
-  --ja-navy-card: #0f2747;
-  --ja-navy-border: #1a3860;
-  --ja-navy-hover: #16365f;
-
-  /* Brand Accents */
   --ja-cyan: #00d2ff;
-  --ja-blue: #0070f3;
+  --ja-blue: #0066cc;
   --ja-teal: #00c2cb;
-  --ja-jade: #10b981;
-  --ja-jaguar-gold: #f59e0b;
-  --ja-doc-blue: #38bdf8;
   
-  /* Text Tokens */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --bg-primary: #06101e;
+  --card-bg: #0c1c33;
+  --card-border: #162f52;
+  --card-hover-border: #00d2ff;
+  
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
 }
 
 * {
@@ -35,17 +30,36 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--ja-navy-darkest);
+  background-color: var(--bg-primary);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(0, 210, 255, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(0, 112, 243, 0.08) 0px, transparent 50%),
-    radial-gradient(at 50% 50%, rgba(7, 21, 39, 1) 0px, rgba(4, 13, 26, 1) 100%);
-  background-attachment: fixed;
-  color: var(--text-primary);
+    radial-gradient(circle at 15% 15%, rgba(0, 210, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(0, 102, 204, 0.05) 0%, transparent 40%);
+  color: var(--text-main);
   font-family: var(--font-main);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Crisp Clean Card Hover */
+.ja-card {
+  transition: all 0.2s ease-in-out;
+}
+.ja-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--card-hover-border) !important;
+  box-shadow: 0 8px 24px -6px rgba(0, 210, 255, 0.15);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 3px;
 }
 
 /* Custom Scrollbar */

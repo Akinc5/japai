@@ -12,9 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <header
           style={{
-            background: "rgba(7, 21, 39, 0.85)",
+            background: "rgba(6, 16, 30, 0.9)",
             backdropFilter: "blur(12px)",
-            borderBottom: "1px solid rgba(26, 56, 96, 0.6)",
+            borderBottom: "1px solid #162f52",
             position: "sticky",
             top: 0,
             zIndex: 1000,
@@ -23,90 +23,63 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           <div
             style={{
-              maxWidth: 1200,
+              maxWidth: 1140,
               margin: "0 auto",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            {/* Brand Logo & Name */}
+            {/* Brand Logo */}
             <Link
               href="/"
               style={{
                 textDecoration: "none",
                 display: "flex",
                 alignItems: "center",
-                gap: "0.75rem",
+                gap: "0.6rem",
               }}
             >
               <div
                 style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: "8px",
-                  background: "linear-gradient(135deg, #00d2ff 0%, #0070f3 100%)",
+                  width: 30,
+                  height: 30,
+                  borderRadius: "6px",
+                  background: "#00d2ff",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontWeight: 800,
-                  color: "#040d1a",
-                  fontSize: "1rem",
-                  boxShadow: "0 0 16px rgba(0, 210, 255, 0.4)",
+                  color: "#06101e",
+                  fontSize: "0.85rem",
                 }}
               >
                 JA
               </div>
-              <div>
-                <div
-                  style={{
-                    color: "#f8fafc",
-                    fontWeight: 800,
-                    fontSize: "1.1rem",
-                    letterSpacing: "-0.02em",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.4rem",
-                  }}
-                >
-                  JA ASSURE<span style={{ color: "#00d2ff" }}>™</span>
-                  <span
-                    style={{
-                      fontSize: "0.65rem",
-                      fontWeight: 700,
-                      background: "rgba(0, 210, 255, 0.15)",
-                      color: "#00d2ff",
-                      border: "1px solid rgba(0, 210, 255, 0.3)",
-                      padding: "1px 6px",
-                      borderRadius: "4px",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    AI OS
-                  </span>
-                </div>
-                <div style={{ color: "#64748b", fontSize: "0.7rem", fontWeight: 500 }}>
-                  Singapore • Malaysia • Hong Kong
-                </div>
+              <div
+                style={{
+                  color: "#ffffff",
+                  fontWeight: 800,
+                  fontSize: "1.05rem",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                JA ASSURE<span style={{ color: "#00d2ff" }}>™</span>
               </div>
             </Link>
 
             {/* Navigation links */}
-            <nav style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
+            <nav style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
               <Link
                 href="/demo"
                 style={{
-                  color: "#e2e8f0",
+                  color: "#00d2ff",
                   textDecoration: "none",
                   fontSize: "0.88rem",
                   fontWeight: 600,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.35rem",
-                  transition: "color 0.15s ease",
                 }}
               >
-                <span style={{ color: "#00d2ff" }}>▶</span> Live Demo
+                Live Demo
               </Link>
               <Link
                 href="/repurpose"
@@ -128,7 +101,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   fontWeight: 500,
                 }}
               >
-                OSM Leads
+                Leads
               </Link>
               <Link
                 href="/visual-studio"
@@ -139,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   fontWeight: 500,
                 }}
               >
-                Visual Studio
+                Visuals
               </Link>
               <Link
                 href="/events"
@@ -172,52 +145,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   fontWeight: 500,
                 }}
               >
-                Observability
+                Logs
               </Link>
             </nav>
-
-            {/* Brand Vertical Badges */}
-            <div style={{ display: "flex", gap: "0.4rem" }}>
-              <span
-                style={{
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
-                  padding: "3px 8px",
-                  borderRadius: "9999px",
-                  background: "rgba(16, 185, 129, 0.15)",
-                  color: "#34d399",
-                  border: "1px solid rgba(16, 185, 129, 0.3)",
-                }}
-              >
-                💎 Jade
-              </span>
-              <span
-                style={{
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
-                  padding: "3px 8px",
-                  borderRadius: "9999px",
-                  background: "rgba(245, 158, 11, 0.15)",
-                  color: "#fbbf24",
-                  border: "1px solid rgba(245, 158, 11, 0.3)",
-                }}
-              >
-                🚢 Jaguar
-              </span>
-              <span
-                style={{
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
-                  padding: "3px 8px",
-                  borderRadius: "9999px",
-                  background: "rgba(56, 189, 248, 0.15)",
-                  color: "#38bdf8",
-                  border: "1px solid rgba(56, 189, 248, 0.3)",
-                }}
-              >
-                🩺 DoctorShield
-              </span>
-            </div>
           </div>
         </header>
 

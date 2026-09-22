@@ -3,190 +3,158 @@ import Link from "next/link";
 export default function Home() {
   const cards = [
     {
-      title: "Live Judge Compliance Sandbox",
-      subtitle: "The 4-Step Safety Engine",
-      description: "Interactive live sandbox: test any insurance claim live against our 4-step compliance gate with real-time MAS & underwriter policy citation.",
-      href: "/demo",
+      title: "Compliance Sandbox",
       badge: "LIVE DEMO",
-      color: "#00d2ff",
-      icon: "▶",
+      desc: "Interactive live testing against the 4-step MAS compliance & underwriter safety gate.",
+      href: "/demo",
       highlight: true,
     },
     {
-      title: "Insurtech 101 Omnichannel Repurposer",
-      subtitle: "High-Yield Content Engine",
-      description: "Repurpose complex insurance masterclasses into multi-channel LinkedIn copy, 5-slide carousels, X threads & high-conversion B2B emails.",
+      title: "Content Repurposer",
+      badge: "REPURPOSE",
+      desc: "Transform insurance whitepapers into LinkedIn posts, carousels, threads & B2B emails.",
       href: "/repurpose",
-      badge: "STANDOUT",
-      color: "#10b981",
-      icon: "📚",
       highlight: true,
     },
     {
-      title: "Singapore OSM Lead Prospecting",
-      subtitle: "Real-Time Geo Intelligence",
-      description: "Live Overpass API queries discovering active jewelry boutiques (Orchard), medical clinics (Novena), and freight hubs (Jurong).",
+      title: "Lead Discovery (OSM)",
+      badge: "LIVE MAP",
+      desc: "Real-time Singapore OpenStreetMap discovery of jewelry shops, clinics & freight hubs.",
       href: "/leads",
-      badge: "OSM LIVE",
-      color: "#38bdf8",
-      icon: "🎯",
     },
     {
-      title: "Visual & Carousel Creative Studio",
-      subtitle: "Midjourney & Carousel Blueprints",
-      description: "Generate brand-tailored luxury visual prompts for Midjourney/Flux and structured 5-slide educational carousels.",
-      href: "/visual-studio",
+      title: "Visual Studio",
       badge: "CREATIVE",
-      color: "#ec4899",
-      icon: "🎨",
+      desc: "Midjourney luxury image blueprints and 5-slide educational carousel structures.",
+      href: "/visual-studio",
     },
     {
-      title: "Industry Event Trigger Engine",
-      subtitle: "Milestone Campaign Automation",
-      description: "1-Click automated campaign generation with pre-configured regulatory angles for SIJE, SMA Convention, and Maritime Week.",
-      href: "/events",
+      title: "Event Triggers",
       badge: "AUTOMATION",
-      color: "#f59e0b",
-      icon: "🗓️",
+      desc: "1-Click automated campaigns for SIJE, SMA Convention, and Maritime Week.",
+      href: "/events",
     },
     {
-      title: "Compliance Human-in-the-Loop Review",
-      subtitle: "Provenance & Decision Queue",
-      description: "Inspect flagged claims, cited MAS & brand policy rules, and multi-language variants with chunk-level knowledge provenance.",
+      title: "Review Queue",
+      badge: "AUDIT",
+      desc: "Human-in-the-loop review interface with chunk-level knowledge provenance.",
       href: "/review",
-      badge: "COMPLIANCE",
-      color: "#6366f1",
-      icon: "🛡️",
     },
     {
-      title: "Market Opportunities & Intelligence",
-      subtitle: "Deterministic Trend Scoring",
-      description: "Research synthesis, competitor monitoring, and algorithmic opportunity scoring matrices without hallucinated scores.",
-      href: "/opportunities",
+      title: "Market Opportunities",
       badge: "RESEARCH",
-      color: "#8b5cf6",
-      icon: "💡",
+      desc: "Deterministic trend scoring and competitive intelligence without hallucinations.",
+      href: "/opportunities",
     },
     {
-      title: "Continuous Optimization & Analytics",
-      subtitle: "Evidence-Based Copy Loops",
-      description: "Engagement analytics breakdown, A/B copy performance, and deterministic insight generation feeding back into prompts.",
+      title: "Campaign Insights",
+      badge: "ANALYTICS",
+      desc: "Evidence-based A/B hook performance analytics feeding directly into prompts.",
       href: "/optimization",
-      badge: "INSIGHTS",
-      color: "#06b6d4",
-      icon: "📈",
     },
     {
-      title: "Enterprise Observability & Guardrails",
-      subtitle: "Telemetry & Budget Controls",
-      description: "Full audit log of every LLM run, token usage, latency metrics, and demo daily quota budget ceilings.",
+      title: "System Logs",
+      badge: "TELEMETRY",
+      desc: "Full audit logs of model latency, token consumption, and daily rate limit guardrails.",
       href: "/observability",
-      badge: "SYSTEM",
-      color: "#64748b",
-      icon: "📡",
     },
   ];
 
   return (
-    <main style={{ padding: "3.5rem 1.5rem 5rem", maxWidth: 1200, margin: "0 auto" }}>
-      {/* Hero Section */}
-      <section style={{ textAlign: "center", marginBottom: "3.5rem", position: "relative" }}>
+    <main style={{ maxWidth: 1100, margin: "0 auto", padding: "3.5rem 1.5rem 4rem" }}>
+      {/* Hero Header */}
+      <section style={{ textAlign: "center", marginBottom: "3rem" }}>
         <div
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            padding: "6px 16px",
-            background: "rgba(0, 210, 255, 0.08)",
-            color: "#00d2ff",
-            borderRadius: "9999px",
-            fontSize: "0.85rem",
+            fontSize: "0.8rem",
             fontWeight: 700,
-            marginBottom: "1.25rem",
-            border: "1px solid rgba(0, 210, 255, 0.25)",
-            boxShadow: "0 0 20px rgba(0, 210, 255, 0.15)",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "#00d2ff",
+            marginBottom: "0.75rem",
           }}
         >
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#00d2ff", display: "inline-block", boxShadow: "0 0 8px #00d2ff" }} />
-          JA ASSURE™ • MULTINATIONAL INSURTECH MARKETING & COMPLIANCE OS
+          Insure • Innovate • Integrate
         </div>
 
         <h1
           style={{
-            fontSize: "clamp(2.2rem, 5vw, 3.4rem)",
+            fontSize: "clamp(2rem, 4vw, 3rem)",
             fontWeight: 800,
-            margin: "0 0 1rem",
             letterSpacing: "-0.03em",
             lineHeight: 1.15,
             color: "#ffffff",
+            margin: "0 0 0.75rem",
           }}
         >
-          Autonomous AI Marketing &amp; Compliance for{" "}
-          <span
-            style={{
-              background: "linear-gradient(135deg, #00d2ff 0%, #0070f3 50%, #38bdf8 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Specialized Insurance
-          </span>
+          JA Assure<span style={{ color: "#00d2ff" }}>™</span> Marketing OS
         </h1>
 
         <p
           style={{
             color: "#94a3b8",
-            fontSize: "1.15rem",
-            maxWidth: 780,
-            margin: "0 auto 2rem",
-            lineHeight: 1.6,
+            fontSize: "1.05rem",
+            maxWidth: 620,
+            margin: "0 auto 1.75rem",
+            lineHeight: 1.5,
           }}
         >
-          Engineered for JA Assure&apos;s flagship verticals: <strong>Jade (Jewellers Block)</strong>,{" "}
-          <strong>Jaguar Transit (High-Value Cargo)</strong>, and <strong>DoctorShield (Medical Indemnity)</strong>.
-          Guaranteed MAS regulatory compliance, live OSM prospecting, and cultural localization.
+          Autonomous multi-agent insurance marketing, regulatory compliance &amp; lead intelligence for{" "}
+          <strong style={{ color: "#ffffff" }}>Jade</strong>,{" "}
+          <strong style={{ color: "#ffffff" }}>Jaguar Transit</strong> &amp;{" "}
+          <strong style={{ color: "#ffffff" }}>DoctorShield</strong>.
         </p>
 
-        {/* Quick KPI stats bar */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "1rem",
-            maxWidth: 950,
-            margin: "0 auto",
-            background: "rgba(11, 31, 58, 0.6)",
-            border: "1px solid rgba(26, 56, 96, 0.8)",
-            borderRadius: "12px",
-            padding: "1.25rem",
-            backdropFilter: "blur(10px)",
-          }}
-        >
-          <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#00d2ff" }}>4-Step</div>
-            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}>Compliance Gate</div>
-          </div>
-          <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#10b981" }}>4 Languages</div>
-            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}>EN • 中文 • MS • ID</div>
-          </div>
-          <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#f59e0b" }}>Live OSM</div>
-            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}>Singapore Prospecting</div>
-          </div>
-          <div>
-            <div style={{ fontSize: "1.6rem", fontWeight: 800, color: "#38bdf8" }}>100%</div>
-            <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}>MAS Advertising Aligned</div>
-          </div>
+        {/* 3 Verticals Pills */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+          <span
+            style={{
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              padding: "4px 12px",
+              borderRadius: "9999px",
+              background: "rgba(16, 185, 129, 0.12)",
+              color: "#34d399",
+              border: "1px solid rgba(16, 185, 129, 0.25)",
+            }}
+          >
+            💎 Jade (Jewellers Block)
+          </span>
+          <span
+            style={{
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              padding: "4px 12px",
+              borderRadius: "9999px",
+              background: "rgba(245, 158, 11, 0.12)",
+              color: "#fbbf24",
+              border: "1px solid rgba(245, 158, 11, 0.25)",
+            }}
+          >
+            🚢 Jaguar (High-Value Cargo)
+          </span>
+          <span
+            style={{
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              padding: "4px 12px",
+              borderRadius: "9999px",
+              background: "rgba(56, 189, 248, 0.12)",
+              color: "#38bdf8",
+              border: "1px solid rgba(56, 189, 248, 0.25)",
+            }}
+          >
+            🩺 DoctorShield (Medical Indemnity)
+          </span>
         </div>
       </section>
 
-      {/* Grid of OS Modules */}
+      {/* Clean Cards Grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-          gap: "1.5rem",
+          gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))",
+          gap: "1.25rem",
         }}
       >
         {cards.map((card) => (
@@ -196,102 +164,88 @@ export default function Home() {
             className="ja-card"
             style={{
               textDecoration: "none",
-              background: card.highlight 
-                ? "linear-gradient(180deg, rgba(15, 39, 71, 0.9) 0%, rgba(11, 31, 58, 0.9) 100%)" 
-                : "rgba(11, 31, 58, 0.6)",
-              border: card.highlight ? "1px solid rgba(0, 210, 255, 0.4)" : "1px solid rgba(26, 56, 96, 0.7)",
-              borderRadius: "14px",
-              padding: "1.75rem",
+              background: "#0c1c33",
+              border: card.highlight ? "1px solid #00d2ff" : "1px solid #162f52",
+              borderRadius: "10px",
+              padding: "1.4rem",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              position: "relative",
-              overflow: "hidden",
             }}
           >
-            {card.highlight && (
+            <div>
               <div
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: 3,
-                  background: "linear-gradient(90deg, #00d2ff, #0070f3, #10b981)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "0.6rem",
                 }}
-              />
-            )}
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                  <span style={{ fontSize: "1.4rem" }}>{card.icon}</span>
-                  <div>
-                    <h2 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 700, color: "#ffffff" }}>
-                      {card.title}
-                    </h2>
-                    <div style={{ fontSize: "0.75rem", color: "#00d2ff", fontWeight: 600, marginTop: "2px" }}>
-                      {card.subtitle}
-                    </div>
-                  </div>
-                </div>
+              >
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: "1.05rem",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                  }}
+                >
+                  {card.title}
+                </h2>
                 <span
                   style={{
                     fontSize: "0.65rem",
-                    fontWeight: 800,
-                    padding: "3px 8px",
-                    borderRadius: "6px",
-                    background: card.highlight ? "#00d2ff" : "rgba(255, 255, 255, 0.1)",
-                    color: card.highlight ? "#040d1a" : "#f8fafc",
-                    letterSpacing: "0.04em",
+                    fontWeight: 700,
+                    padding: "2px 7px",
+                    borderRadius: "4px",
+                    background: card.highlight ? "rgba(0, 210, 255, 0.15)" : "rgba(255, 255, 255, 0.06)",
+                    color: card.highlight ? "#00d2ff" : "#94a3b8",
                   }}
                 >
                   {card.badge}
                 </span>
               </div>
-              <p style={{ margin: 0, color: "#94a3b8", fontSize: "0.9rem", lineHeight: 1.55 }}>
-                {card.description}
+              <p
+                style={{
+                  margin: 0,
+                  color: "#94a3b8",
+                  fontSize: "0.85rem",
+                  lineHeight: 1.5,
+                }}
+              >
+                {card.desc}
               </p>
             </div>
             <div
               style={{
-                marginTop: "1.5rem",
-                paddingTop: "1rem",
-                borderTop: "1px solid rgba(26, 56, 96, 0.6)",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                marginTop: "1.25rem",
+                fontSize: "0.8rem",
+                fontWeight: 600,
                 color: "#00d2ff",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.4rem",
               }}
             >
-              Launch Module <span style={{ transition: "transform 0.2s ease" }}>→</span>
+              Open →
             </div>
           </Link>
         ))}
       </div>
 
-      {/* Brand Footer */}
+      {/* Clean Footer */}
       <footer
         style={{
-          marginTop: "4rem",
-          paddingTop: "2rem",
-          borderTop: "1px solid rgba(26, 56, 96, 0.6)",
+          marginTop: "3.5rem",
+          paddingTop: "1.5rem",
+          borderTop: "1px solid #162f52",
           display: "flex",
-          flexWrap: "wrap",
           justifyContent: "space-between",
-          alignItems: "center",
           color: "#64748b",
-          fontSize: "0.85rem",
-          gap: "1rem",
+          fontSize: "0.8rem",
+          flexWrap: "wrap",
+          gap: "0.75rem",
         }}
       >
-        <div>
-          <strong style={{ color: "#94a3b8" }}>JA Assure™ Insurtech Ecosystem:</strong> Singapore • Malaysia • Hong Kong • Indonesia • Thailand
-        </div>
-        <div>
-          Protected under MAS Advertising Regulations &amp; Insurance Act Standards
-        </div>
+        <div>JA Assure™ Insurtech Operating System</div>
+        <div>Singapore • Malaysia • Hong Kong</div>
       </footer>
     </main>
   );
