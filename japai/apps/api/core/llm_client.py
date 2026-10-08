@@ -98,11 +98,10 @@ def generate(
 
     candidate_models = [
         model,
-        "gemini-2.5-flash",
-        "gemini-1.5-flash",
-        "gemini-2.0-flash",
+        "gemini-flash-lite-latest",
+        "gemini-pro-latest",
+        "gemini-2.5-pro",
         "gemini-flash-latest",
-        "gemini-3.6-flash",
     ]
     seen = set()
     candidate_models = [m for m in candidate_models if not (m in seen or seen.add(m))]

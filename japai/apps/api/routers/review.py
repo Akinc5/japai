@@ -60,10 +60,8 @@ def list_pending(db: Session = Depends(get_db)):
         db.query(ContentVersion)
         .join(ContentAsset, ContentVersion.content_asset_id == ContentAsset.id)
         .filter(
-            ContentVersion.status == "submitted_for_review",
+            ContentVersion.status.in_(["submitted_for_review", "rejected", "draft"]),
             ContentVersion.is_current.is_(True),
-            # Regression fixtures that score 'review' would otherwise land straight
-            # in the demo queue alongside real content.
             ContentAsset.origin == "agent",
         )
         .order_by(ContentVersion.created_at.desc())
@@ -73,17 +71,26 @@ def list_pending(db: Session = Depends(get_db)):
     for version in versions:
         asset = version.content_asset
         review = _latest_review(db, version.id)
+        detected_issues = (review.detected_issues or []) if review else []
+        metadata = version.version_metadata or {}
         results.append(
             {
                 "content_version_id": version.id,
                 "content_asset_id": asset.id,
                 "brand_id": asset.brand_id,
                 "brand_name": asset.brand.name if asset.brand else None,
+                "title": asset.title,
                 "platform": asset.platform,
                 "language": asset.language,
                 "is_localized": asset.source_content_asset_id is not None,
-                "body_preview": version.body[:200],
+                "body_preview": version.body[:240],
+                "status": version.status,
                 "risk_level": _risk_level(review),
+                "compliance_outcome": review.outcome if review else None,
+                "compliance_notes": review.notes if review else None,
+                "detected_issues": detected_issues[:3],
+                "issues_count": len(detected_issues),
+                "has_suggested_revision": bool(metadata.get("suggested_revision")),
                 "created_at": version.created_at,
             }
         )

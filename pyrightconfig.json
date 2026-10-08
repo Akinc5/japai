@@ -1,0 +1,11 @@
+{
+  "include": [
+    "japai",
+    "japai/apps/api"
+  ],
+  "extraPaths": [
+    "japai",
+    "C:/Users/akshansh sharma/AppData/Local/Programs/Python/Python313/Lib/site-packages"
+  ],
+  "pythonPath": "C:/Users/akshansh sharma/AppData/Local/Programs/Python/Python313/python.exe"
+}

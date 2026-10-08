@@ -15,7 +15,7 @@ _ENV_FILES = [
 class Settings(BaseSettings):
     DATABASE_URL: str = "postgresql://ja_assure:ja_assure@localhost:5432/ja_assure"
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-3.6-flash"
+    GEMINI_MODEL: str = "gemini-flash-lite-latest"
     FIRECRAWL_API_KEY: str = ""
     GOOGLE_PLACES_API_KEY: str = ""
     HUNTER_API_KEY: str = ""

@@ -55,11 +55,18 @@ export type PendingItem = {
   content_asset_id: string;
   brand_id: string;
   brand_name: string | null;
+  title?: string | null;
   platform: string | null;
   language: string | null;
   is_localized: boolean;
   body_preview: string;
+  status?: string;
   risk_level: "pass" | "review" | "block" | null;
+  compliance_outcome?: string | null;
+  compliance_notes?: string | null;
+  detected_issues?: { term: string; reason: string; policy_ref?: string | null }[];
+  issues_count?: number;
+  has_suggested_revision?: boolean;
   created_at: string;
 };
 
@@ -178,6 +185,18 @@ export async function fetchOpportunities(brandId: string): Promise<Opportunity[]
   return res.json();
 }
 
+export async function generateOpportunities(brandId: string): Promise<Opportunity[]> {
+  const res = await fetch(`${API_BASE_URL}/opportunities/generate?brand_id=${brandId}`, {
+    method: "POST",
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}));
+    throw new Error(detail.detail || `Opportunity generation failed (${res.status})`);
+  }
+  const data = await res.json();
+  return data.generated || [];
+}
+
 export async function generateCampaign(opportunityId: string): Promise<CampaignResult> {
   const res = await fetch(`${API_BASE_URL}/campaigns/from-opportunity`, {
     method: "POST",
@@ -234,6 +253,8 @@ export type LeadOutreach = {
   risk_level: string | null;
   compliance_outcome: string | null;
 };
+
+export type OutreachDraft = LeadOutreach;
 
 export type Lead = {
   lead_id: string;

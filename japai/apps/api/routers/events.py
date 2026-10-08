@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from apps.api.agents import events as events_agent
-from apps.api.agents import campaign as campaign_agent
+from apps.api.core.brand_utils import get_or_resolve_brand
 from apps.api.core.db import get_db
 from apps.api.models import Brand, Campaign
 
@@ -44,22 +44,19 @@ def trigger_event_campaign(
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
-    brand = db.query(Brand).filter(Brand.slug == event["brand_slug"]).first()
+    brand = get_or_resolve_brand(db, event["brand_slug"])
     if not brand:
         raise HTTPException(status_code=404, detail=f"Brand '{event['brand_slug']}' not found in database")
 
-    # Build campaign brief
-    brief = (
-        f"Event Campaign for {event['title']} ({event['date_window']}). "
-        f"Target Audience: {event['target_audience']}. "
-        f"Key Angles: {'; '.join(event['suggested_angles'])}. "
-        f"Call to Action: {event['default_cta']}."
-    )
+    key_message = f"Event Campaign for {event['title']} ({event['date_window']}). Key Angles: {'; '.join(event['suggested_angles'])}."
 
     campaign = Campaign(
         brand_id=brand.id,
         name=f"Event Push: {event['title']}",
-        brief=brief,
+        objective=f"Event Marketing & Timely Audience Outreach for {event['title']}",
+        target_audience=event.get("target_audience"),
+        key_message=key_message,
+        cta=event.get("default_cta"),
         status="active"
     )
     db.add(campaign)
@@ -68,9 +65,10 @@ def trigger_event_campaign(
 
     return {
         "event": event,
-        "campaign_id": campaign.id,
+        "campaign_id": str(campaign.id),
         "campaign_name": campaign.name,
-        "brief": campaign.brief,
+        "key_message": campaign.key_message,
         "status": "created",
         "message": f"Successfully launched marketing campaign for '{event['title']}'."
     }
+

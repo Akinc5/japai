@@ -73,9 +73,8 @@ def _group_by_metadata_key(db: Session, brand_id: UUID, key: str) -> list[dict]:
     """Average the primary metric grouped by a content_versions.metadata key."""
     rows = (
         db.query(
-            ContentVersion.version_metadata[key].astext.label("bucket"),
-            func.count(Analytics.id).label("posts"),
-            func.avg(Analytics.metric_value).label("avg_value"),
+            ContentVersion.version_metadata,
+            Analytics.metric_value,
         )
         .join(ContentAsset, ContentAsset.id == Analytics.content_asset_id)
         .join(ContentVersion, ContentVersion.content_asset_id == ContentAsset.id)
@@ -83,15 +82,21 @@ def _group_by_metadata_key(db: Session, brand_id: UUID, key: str) -> list[dict]:
             ContentAsset.brand_id == brand_id,
             ContentAsset.origin.in_(AGGREGATED_ORIGINS),
             Analytics.metric_name == PRIMARY_METRIC,
-            ContentVersion.version_metadata[key].astext.isnot(None),
         )
-        .group_by("bucket")
         .all()
     )
+    buckets: dict[str, list[float]] = {}
+    for metadata, value in rows:
+        if not metadata or not isinstance(metadata, dict):
+            continue
+        bucket = metadata.get(key)
+        if bucket is not None:
+            bucket_str = str(bucket)
+            buckets.setdefault(bucket_str, []).append(float(value))
+
     return [
-        {"bucket": r.bucket, "posts": r.posts, "avg_engagement_rate": round(float(r.avg_value), 2)}
-        for r in rows
-        if r.bucket is not None
+        {"bucket": bucket, "posts": len(vals), "avg_engagement_rate": round(sum(vals) / len(vals), 2)}
+        for bucket, vals in buckets.items()
     ]
 
 

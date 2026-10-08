@@ -3,14 +3,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  fetchBrands,
   fetchMasterclassTemplates,
   generateRepurposedContent,
   saveRepurposedAssetToQueue,
   MasterclassTemplate,
   RepurposedNurtureKit,
+  BrandSummary,
 } from "@/lib/api";
 
 export default function RepurposePage() {
+  const [brands, setBrands] = useState<BrandSummary[]>([]);
   const [templates, setTemplates] = useState<MasterclassTemplate[]>([]);
   const [selectedBrand, setSelectedBrand] = useState("jade");
   const [sourceText, setSourceText] = useState("");
@@ -19,10 +22,18 @@ export default function RepurposePage() {
   const [activeTab, setActiveTab] = useState<"linkedin" | "carousel" | "x_thread" | "email">("linkedin");
   const [result, setResult] = useState<RepurposedNurtureKit | null>(null);
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
-  const [queueStatus, setQueueStatus] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [queueStatus, setQueueStatus] = useState<{ type: "success" | "error"; text: string; versionId?: string } | null>(null);
   const [savingToQueue, setSavingToQueue] = useState(false);
 
   useEffect(() => {
+    fetchBrands()
+      .then((bs) => {
+        if (Array.isArray(bs) && bs.length > 0) {
+          setBrands(bs);
+        }
+      })
+      .catch((err) => console.warn("Failed to load brands:", err));
+
     fetchMasterclassTemplates()
       .then((data) => {
         if (Array.isArray(data)) {
@@ -78,7 +89,8 @@ export default function RepurposePage() {
       );
       setQueueStatus({
         type: "success",
-        text: `✅ ${res.message} (Outcome: ${res.compliance_outcome.toUpperCase()}) — Visible on /review dashboard`,
+        text: `✅ ${res.message} (Compliance Verdict: ${res.compliance_outcome.replace(/_/g, ' ').toUpperCase()})`,
+        versionId: res.version_id,
       });
     } catch (err: any) {
       setQueueStatus({
@@ -163,7 +175,7 @@ export default function RepurposePage() {
           boxShadow: "0 1px 4px rgba(0, 43, 73, 0.04)",
         }}
       >
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: "1rem", marginBottom: "1rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 240px", gap: "1rem", marginBottom: "1rem" }}>
           <div>
             <label style={{ display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#002b49", marginBottom: "0.25rem" }}>
               Document / Masterclass Topic:
@@ -201,9 +213,19 @@ export default function RepurposePage() {
                 fontSize: "0.9rem",
               }}
             >
-              <option value="jade">Jade (Jewellers Block)</option>
-              <option value="ja-assure">JA Assure / Jaguar Transit</option>
-              <option value="doctor-shield">DoctorShield (Medical Indemnity)</option>
+              {brands.length > 0 ? (
+                brands.map((b) => (
+                  <option key={b.brand_id} value={b.slug}>
+                    {b.name}
+                  </option>
+                ))
+              ) : (
+                <>
+                  <option value="jade">Jade (Jewellers Block)</option>
+                  <option value="jaguar-transit">Jaguar Transit (Cargo)</option>
+                  <option value="doctorshield">DoctorShield (Medical Indemnity)</option>
+                </>
+              )}
             </select>
           </div>
         </div>
@@ -260,30 +282,36 @@ export default function RepurposePage() {
       {queueStatus && (
         <div
           style={{
-            padding: "14px",
+            padding: "16px 18px",
             borderRadius: "8px",
             marginBottom: "1.5rem",
             background: queueStatus.type === "success" ? "#ecfdf5" : "#fef2f2",
             color: queueStatus.type === "success" ? "#047857" : "#b91c1c",
             border: `1px solid ${queueStatus.type === "success" ? "#a7f3d0" : "#fecaca"}`,
-            fontSize: "0.9rem",
+            fontSize: "0.95rem",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap",
+            gap: 10,
+            boxShadow: "0 2px 5px rgba(0,0,0,0.03)",
           }}
         >
           <span>{queueStatus.text}</span>
           {queueStatus.type === "success" && (
             <Link
-              href="/review"
+              href={queueStatus.versionId ? `/review/${queueStatus.versionId}` : "/review"}
               style={{
-                color: "#047857",
-                textDecoration: "underline",
+                color: "#ffffff",
+                background: "#047857",
+                padding: "6px 14px",
+                borderRadius: "6px",
+                textDecoration: "none",
                 fontWeight: 700,
                 fontSize: "0.85rem",
               }}
             >
-              Open Review Queue →
+              Open in Review Queue →
             </Link>
           )}
         </div>
@@ -306,7 +334,7 @@ export default function RepurposePage() {
               background: "#eff6ff",
               borderRadius: "8px",
               padding: "1.25rem",
-              marginBottom: "1.5rem",
+              marginBottom: "1.25rem",
               borderLeft: "4px solid #0066cc",
             }}
           >
@@ -317,6 +345,51 @@ export default function RepurposePage() {
               {result.executive_summary}
             </p>
           </div>
+
+          {/* Real-Time Compliance Pre-Audit Status Strip */}
+          {result.compliance_check && (
+            <div
+              style={{
+                background: result.compliance_check.passed ? "#f0fdf4" : "#fffbeb",
+                border: `1px solid ${result.compliance_check.passed ? "#bbf7d0" : "#fde68a"}`,
+                borderRadius: "8px",
+                padding: "12px 16px",
+                marginBottom: "1.5rem",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 8,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 16 }}>{result.compliance_check.passed ? "🛡️" : "⚠️"}</span>
+                <div>
+                  <strong style={{ color: result.compliance_check.passed ? "#166534" : "#92400e", fontSize: "0.9rem" }}>
+                    Compliance Engine Audit: {result.compliance_check.passed ? "PASSED (Zero MAS Violations Detected)" : "FLAGGED FOR HUMAN REVIEW"}
+                  </strong>
+                  {result.compliance_check.issues_found && result.compliance_check.issues_found.length > 0 && (
+                    <div style={{ fontSize: "0.8rem", color: "#b91c1c", marginTop: 2 }}>
+                      Issues detected: {result.compliance_check.issues_found.map((i: any) => i.term).join(", ")}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <span
+                style={{
+                  background: result.compliance_check.passed ? "#dcfce7" : "#fef3c7",
+                  color: result.compliance_check.passed ? "#15803d" : "#b45309",
+                  fontWeight: 700,
+                  fontSize: "0.75rem",
+                  padding: "3px 8px",
+                  borderRadius: 4,
+                  textTransform: "uppercase",
+                }}
+              >
+                MAS Advertising Check
+              </span>
+            </div>
+          )}
 
           {/* Format Tabs */}
           <div

@@ -51,9 +51,12 @@ export default function OptimizationPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  const [brands, setBrands] = useState<any[]>([]);
+
   useEffect(() => {
     fetchBrands()
       .then((bs) => {
+        setBrands(bs);
         const jade = bs.find((b: any) => b.slug === "jade") ?? bs[0];
         if (jade) setBrandId(jade.brand_id);
       })
@@ -99,22 +102,45 @@ export default function OptimizationPage() {
 
       {error && <div style={{ color: "#b91c1c", background: "#fef2f2", padding: "10px 14px", borderRadius: 6, border: "1px solid #fecaca", marginBottom: 14 }}>Error: {error}</div>}
 
-      <button
-        onClick={onAnalyze}
-        disabled={busy || !brandId}
-        style={{
-          marginBottom: 18,
-          padding: "9px 18px",
-          borderRadius: 6,
-          background: busy ? "#94a3b8" : "#0066cc",
-          color: "white",
-          fontWeight: 700,
-          border: "none",
-          cursor: busy ? "not-allowed" : "pointer",
-        }}
-      >
-        {busy ? "Analyzing Copy Patterns…" : "⚡ Run Engagement Analysis"}
-      </button>
+      <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: 18, flexWrap: "wrap" }}>
+        {brands.length > 0 && (
+          <select
+            value={brandId || ""}
+            onChange={(e) => setBrandId(e.target.value)}
+            style={{
+              padding: "9px 12px",
+              borderRadius: 6,
+              border: "1px solid #cbd5e1",
+              background: "#ffffff",
+              color: "#0f172a",
+              fontSize: "0.9rem",
+              fontWeight: 600,
+            }}
+          >
+            {brands.map((b) => (
+              <option key={b.brand_id} value={b.brand_id}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+        )}
+
+        <button
+          onClick={onAnalyze}
+          disabled={busy || !brandId}
+          style={{
+            padding: "9px 18px",
+            borderRadius: 6,
+            background: busy ? "#94a3b8" : "#0066cc",
+            color: "white",
+            fontWeight: 700,
+            border: "none",
+            cursor: busy ? "not-allowed" : "pointer",
+          }}
+        >
+          {busy ? "Analyzing Copy Patterns…" : "⚡ Run Engagement Analysis"}
+        </button>
+      </div>
 
       {!data && !error && <p style={{ color: "#64748b" }}>Loading insights…</p>}
       {data && data.insights.length === 0 && (

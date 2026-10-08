@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from apps.api.agents import compliance as compliance_agent
 from apps.api.agents import repurpose as repurpose_agent
+from apps.api.core.brand_utils import get_or_resolve_brand
 from apps.api.core.db import get_db
 from apps.api.models import Brand, Campaign, ContentAsset, ContentVersion
 
@@ -15,7 +16,7 @@ router = APIRouter(prefix="/repurpose", tags=["repurpose"])
 
 class RepurposeRequest(BaseModel):
     source_text: str = Field(..., min_length=20, description="The educational text, masterclass article, or policy whitepaper.")
-    brand_slug: str = Field(default="jade", description="Target brand slug (jade, ja-assure, doctor-shield)")
+    brand_slug: str = Field(default="jade", description="Target brand slug (jade, jaguar-transit, doctorshield)")
     title: Optional[str] = Field(default=None, description="Optional title or topic")
 
 
@@ -59,9 +60,9 @@ def save_repurposed_asset_to_queue(
     db: Session = Depends(get_db)
 ):
     """Pushes a chosen repurposed asset directly into the Compliance Review Queue."""
-    brand = db.query(Brand).filter(Brand.slug == req.brand_slug).first()
+    brand = get_or_resolve_brand(db, req.brand_slug)
     if not brand:
-        brand = db.query(Brand).first()
+        raise HTTPException(status_code=404, detail="Brand not found")
 
     # Find or create a Masterclass Nurture Campaign
     campaign = db.query(Campaign).filter(
@@ -74,46 +75,43 @@ def save_repurposed_asset_to_queue(
             brand_id=brand.id,
             name="Insurtech 101 Masterclass Series",
             objective="Educational Nurture & Authority Building",
-            brief="Repurposed high-value insurance educational articles, whitepapers, and masterclasses into compliance-gated multi-channel assets.",
+            key_message="Repurposed high-value insurance educational articles, whitepapers, and masterclasses into compliance-gated multi-channel assets.",
             target_audience="Industry B2B Decision Makers & Commercial Policyholders",
             status="active",
         )
         db.add(campaign)
         db.flush()
 
+    # Map asset_type to valid check constraint: 'social_post','email','blog_article','ad_copy','landing_page','other'
+    valid_asset_types = {"social_post", "email", "blog_article", "ad_copy", "landing_page", "other"}
+    asset_type = req.asset_type if req.asset_type in valid_asset_types else "social_post"
+
     asset = ContentAsset(
         brand_id=brand.id,
         campaign_id=campaign.id,
-        asset_type=req.asset_type,
+        asset_type=asset_type,
         platform=req.platform,
-        status="pending_review",
+        title=req.title or "Repurposed Masterclass Content",
+        status="draft",
         origin="agent",
+        language="en",
     )
     db.add(asset)
     db.flush()
 
     version = ContentVersion(
-        asset_id=asset.id,
+        content_asset_id=asset.id,
         version_number=1,
-        content_text=req.content_text,
-        language="en",
+        body=req.content_text,
+        generated_by_agent="repurpose_agent",
+        status="draft",
+        is_current=True,
     )
     db.add(version)
     db.flush()
 
-    # Run compliance check
-    review = compliance_agent.run_compliance_check(
-        db=db,
-        brand_id=brand.id,
-        text=req.content_text,
-    )
-    # Store review linked to version
-    db_review = compliance_agent.store_compliance_review(
-        db=db,
-        version_id=version.id,
-        review_result=review,
-    )
-    db.commit()
+    # Run compliance check (populates ComplianceReview and sets version status)
+    review = compliance_agent.run_compliance_check(db=db, content_version=version)
 
     return {
         "status": "success",
@@ -122,3 +120,4 @@ def save_repurposed_asset_to_queue(
         "compliance_outcome": review.outcome,
         "message": "Asset successfully submitted to Compliance Review Queue!"
     }
+

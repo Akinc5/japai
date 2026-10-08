@@ -222,15 +222,17 @@ export default function VisualStudioPage() {
                       <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#0066cc", background: "#e0f2fe", padding: "2px 6px", borderRadius: 4 }}>
                         SLIDE {slide.slide_number}
                       </span>
-                      <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>{slide.role}</span>
+                      {slide.cta && (
+                        <span style={{ fontSize: "0.75rem", color: "#0066cc", fontWeight: 600 }}>{slide.cta}</span>
+                      )}
                     </div>
                     <div style={{ fontSize: "0.95rem", fontWeight: 700, color: "#002b49", marginBottom: "6px" }}>
                       {slide.headline}
                     </div>
-                    <div style={{ fontSize: "0.85rem", color: "#475569", lineHeight: 1.45 }}>{slide.body}</div>
+                    <div style={{ fontSize: "0.85rem", color: "#475569", lineHeight: 1.45 }}>{slide.body_copy}</div>
                   </div>
                   <div style={{ marginTop: "10px", fontSize: "0.78rem", color: "#0066cc", background: "#ffffff", padding: "6px 8px", borderRadius: 4, border: "1px solid #e2e8f0" }}>
-                    🎨 <strong>Visual:</strong> {slide.visual_direction}
+                    🎨 <strong>Visual:</strong> {slide.visual_cue}
                   </div>
                 </div>
               ))}

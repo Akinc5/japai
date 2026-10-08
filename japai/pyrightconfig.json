@@ -1,0 +1,12 @@
+{
+  "include": [
+    "apps",
+    "db",
+    "tests"
+  ],
+  "extraPaths": [
+    ".",
+    "C:/Users/akshansh sharma/AppData/Local/Programs/Python/Python313/Lib/site-packages"
+  ],
+  "pythonPath": "C:/Users/akshansh sharma/AppData/Local/Programs/Python/Python313/python.exe"
+}
